@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas terapii onkologicznej</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f3ec;
+    --paper-2:#efeae0;
+    --card:#fffefb;
+    --ink:#1c1a17;
+    --ink-2:#54504a;
+    --ink-3:#8a857d;
+    --line:#e0d9cc;
+    --line-2:#d0c7b6;
+
+    /* akcenty metod - ziemiste, klinicznie stonowane */
+    --surgery:#2f8f83;     /* chirurgia - zielono-morski */
+    --chemo:#7a5cc4;       /* chemioterapia - śliwka */
+    --radio:#c9862a;       /* radioterapia - ochra */
+    --immuno:#c04f7a;      /* immunoterapia - malina */
+
+    --surgery-bg:#e6f1ef;
+    --chemo-bg:#efeaf8;
+    --radio-bg:#f7eeda;
+    --immuno-bg:#f7e7ed;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 26px}
+
+  /* ---------- HERO ---------- */
+  header{
+    padding:70px 0 44px;
+    border-bottom:2px solid var(--ink);
+  }
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--radio);font-weight:600;margin-bottom:22px;
+  }
+  h1{
+    font-family:'Newsreader',serif;font-weight:600;
+    font-size:clamp(40px,6.5vw,78px);line-height:1;letter-spacing:-.02em;margin-bottom:22px;
+  }
+  h1 em{font-style:italic;color:var(--chemo)}
+  .lede{font-size:18px;color:var(--ink-2);max-width:640px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:22px;margin-top:34px}
+  .lg{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600}
+  .swatch{width:14px;height:14px;border-radius:3px}
+  .swatch.surgery{background:var(--surgery)}
+  .swatch.chemo{background:var(--chemo)}
+  .swatch.radio{background:var(--radio)}
+  .swatch.immuno{background:var(--immuno)}
+
+  /* ---------- LAYOUT: TOC + CONTENT ---------- */
+  .shell{display:grid;grid-template-columns:264px 1fr;gap:44px;align-items:start;padding-top:40px}
+
+  /* ---------- TABLE OF CONTENTS ---------- */
+  .toc{position:sticky;top:20px;max-height:calc(100vh - 40px);overflow-y:auto;padding-right:8px}
+  .toc-head{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--ink-3);font-weight:600;
+    padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--line-2);
+  }
+  .toc-search{
+    width:100%;background:var(--card);border:1px solid var(--line-2);
+    border-radius:9px;padding:9px 12px;font-family:'IBM Plex Sans',sans-serif;
+    font-size:13.5px;color:var(--ink);margin-bottom:16px;
+  }
+  .toc-search:focus{outline:2px solid var(--chemo);outline-offset:1px;border-color:transparent}
+  .toc-group{margin-bottom:16px}
+  .toc-group-title{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--ink-3);margin-bottom:6px;
+  }
+  .toc-link{
+    display:block;font-size:13.5px;color:var(--ink-2);text-decoration:none;
+    padding:4px 10px;border-radius:7px;border-left:2px solid transparent;
+    margin-left:-2px;transition:all .13s ease;line-height:1.35;
+  }
+  .toc-link:hover{background:var(--paper-2);color:var(--ink)}
+  .toc-link.active{
+    background:var(--card);color:var(--ink);font-weight:600;
+    border-left-color:var(--chemo);box-shadow:0 1px 3px rgba(0,0,0,.05);
+  }
+  .toc-link.hidden{display:none}
+
+  /* ---------- CONTENT ---------- */
+  .content{min-width:0}
+  .group{margin-bottom:52px}
+  .group-head{
+    display:flex;align-items:baseline;gap:14px;margin-bottom:22px;
+  }
+  .group-num{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;
+    color:#fff;background:var(--ink);padding:3px 9px;border-radius:6px;
+  }
+  .group-title{font-family:'Newsreader',serif;font-weight:600;font-size:28px;letter-spacing:-.01em}
+  .group-line{flex:1;height:1px;background:var(--line-2)}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:26px 28px;margin-bottom:18px;scroll-margin-top:24px;
+    box-shadow:0 1px 2px rgba(28,26,23,.03);
+  }
+  .card.flash{animation:flash 1.4s ease}
+  @keyframes flash{
+    0%{box-shadow:0 0 0 3px var(--chemo)}
+    100%{box-shadow:0 1px 2px rgba(28,26,23,.03)}
+  }
+  .card-name{font-family:'Newsreader',serif;font-weight:600;font-size:23px;letter-spacing:-.01em;margin-bottom:2px}
+  .card-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-3);margin-bottom:20px}
+
+  .methods{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}
+  .method{display:flex;gap:12px;align-items:flex-start}
+  .method-icon{
+    width:34px;height:34px;border-radius:9px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .method-icon.surgery{background:var(--surgery-bg);color:var(--surgery)}
+  .method-icon.chemo{background:var(--chemo-bg);color:var(--chemo)}
+  .method-icon.radio{background:var(--radio-bg);color:var(--radio)}
+  .method-icon.immuno{background:var(--immuno-bg);color:var(--immuno)}
+  .method-body{flex:1;min-width:0}
+  .method-top{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+  .method-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .method-name.surgery{color:var(--surgery)}
+  .method-name.chemo{color:var(--chemo)}
+  .method-name.radio{color:var(--radio)}
+  .method-name.immuno{color:var(--immuno)}
+  .role{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.03em}
+  .role.core{background:#dff0e2;color:#2c7a45}
+  .role.sel{background:#f7eeda;color:#a56d1a}
+  .role.no{background:#eee9e0;color:#98918;color:var(--ink-3)}
+  .method-desc{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+
+  /* ---------- PRINCIPLE ---------- */
+  .principle{
+    background:var(--ink);color:var(--paper);border-radius:18px;padding:38px;margin:20px 0 50px;
+  }
+  .principle h3{font-family:'Newsreader',serif;font-weight:600;font-size:26px;margin-bottom:22px;color:#fff}
+  .prin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+  .prin-item{display:flex;gap:13px;align-items:flex-start}
+  .prin-bar{width:4px;align-self:stretch;min-height:46px;border-radius:4px;flex-shrink:0}
+  .prin-bar.surgery{background:var(--surgery)}
+  .prin-bar.chemo{background:var(--chemo)}
+  .prin-bar.radio{background:var(--radio)}
+  .prin-bar.immuno{background:var(--immuno)}
+  .prin-item strong{display:block;font-size:15px;margin-bottom:2px;color:#fff}
+  .prin-item span{font-size:13px;color:#b8b2a6}
+  .prin-note{margin-top:26px;padding-top:22px;border-top:1px solid #38342e;font-size:14.5px;color:#cfc9bd}
+  .prin-note strong{color:#fff}
+
+  .noresult{text-align:center;padding:50px;color:var(--ink-3);font-size:15px;display:none}
+  .noresult.show{display:block}
+
+  footer{border-top:2px solid var(--ink);padding:30px 0 50px;margin-top:20px;font-size:12.5px;color:var(--ink-3)}
+  footer p{max-width:760px;line-height:1.65}
+
+  @media(max-width:900px){
+    .shell{grid-template-columns:1fr;gap:0}
+    .toc{position:static;max-height:none;margin-bottom:40px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+    .methods{grid-template-columns:1fr}
+  }
+  @media(max-width:560px){
+    header{padding:48px 0 32px}
+    .principle{padding:26px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Onkologia · orientacja w leczeniu</div>
+    <h1>Atlas <em>terapii</em><br>nowotworów</h1>
+    <p class="lede">Cztery metody leczenia, jeden stały kod kolorów. Sprawdź szybko, gdzie dana metoda jest podstawą, a gdzie tylko uzupełnieniem — dla każdego z 30 nowotworów.</p>
+    <div class="legend">
+      <div class="lg"><span class="swatch surgery"></span>Chirurgia</div>
+      <div class="lg"><span class="swatch chemo"></span>Chemioterapia</div>
+      <div class="lg"><span class="swatch radio"></span>Radioterapia</div>
+      <div class="lg"><span class="swatch immuno"></span>Immunoterapia / celowane</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="shell">
+    <!-- SPIS TREŚCI -->
+    <nav class="toc" id="toc">
+      <div class="toc-head">Spis nowotworów</div>
+      <input type="text" class="toc-search" id="tocSearch" placeholder="Filtruj listę…" autocomplete="off">
+      <div id="tocList"></div>
+    </nav>
+
+    <!-- TREŚĆ -->
+    <div class="content">
+      <div id="atlas"></div>
+      <div class="noresult" id="noresult">Brak nowotworów pasujących do wyszukiwania.</div>
+
+      <div class="principle">
+        <h3>Zasada, która porządkuje wszystko</h3>
+        <div class="prin-grid">
+          <div class="prin-item"><div class="prin-bar surgery"></div><div><strong>Chirurgia</strong><span>Leczenie miejscowe. Podstawa, gdy guz jest ograniczony i resekcyjny.</span></div></div>
+          <div class="prin-item"><div class="prin-bar radio"></div><div><strong>Radioterapia</strong><span>Leczenie miejscowo-regionalne. Alternatywa lub uzupełnienie chirurgii.</span></div></div>
+          <div class="prin-item"><div class="prin-bar chemo"></div><div><strong>Chemioterapia</strong><span>Leczenie systemowe. Działa na cały organizm — mikroprzerzuty, choroba rozsiana.</span></div></div>
+          <div class="prin-item"><div class="prin-bar immuno"></div><div><strong>Immuno / celowane</strong><span>Leczenie systemowe „precyzyjne". Zależne od cech biologicznych guza.</span></div></div>
+        </div>
+        <p class="prin-note"><strong>Guzy lite kontra nowotwory hematologiczne:</strong> chłoniaki, białaczki i szpiczak z zasady nie mają chirurgii jako metody leczącej — nie tworzą jednej masy do wycięcia.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Uwaga:</strong> materiał edukacyjny, ujęcie uproszczone. Rzeczywiste decyzje terapeutyczne zależą od stopnia zaawansowania, podtypu molekularnego, stanu sprawności i aktualnych wytycznych. Nie zastępuje konsultacji ani podręcznika. Role: <strong style="color:#2c7a45">podstawa</strong> · <strong style="color:#a56d1a">selektywnie</strong> · <strong style="color:var(--ink-3)">rzadko/nie</strong>.</p>
+  </div>
+</footer>
+
+<script>
+const DATA=[
+ {group:"Układ oddechowy",cancers:[
+  {name:"Rak płuca — NDRP",sub:"niedrobnokomórkowy · ~85%",m:{
+    surgery:["core","Podstawa w st. I–II (lobektomia/pneumonektomia z limfadenektomią)."],
+    chemo:["core","Uzupełniająca po operacji (II–III), paliatywna w chorobie rozsianej."],
+    radio:["core","SBRT w I–II przy dyskwalifikacji od operacji; radykalna/paliatywna w III–IV."],
+    immuno:["core","Anty-PD-1/PD-L1 (niwolumab, pembrolizumab); inhibitory EGFR/ALK przy mutacji."]}},
+  {name:"Rak płuca — DRP",sub:"drobnokomórkowy · ~15%",m:{
+    surgery:["no","Rzadko — tylko bardzo wczesne, ograniczone przypadki."],
+    chemo:["core","Podstawa leczenia zawsze."],
+    radio:["core","Na klatkę piersiową (postać ograniczona LD) + profilaktyczne napromienianie mózgu (PCI)."],
+    immuno:["sel","W chorobie rozległej (ED) w skojarzeniu z chemioterapią."]}},
+  {name:"Międzybłoniak opłucnej",sub:"związek z azbestem",m:{
+    surgery:["sel","Pneumonektomia zewnątrzopłucnowa lub pleurektomia w I–III bez cechy N2."],
+    chemo:["core","Podstawa w chorobie zaawansowanej (pemetreksed + cisplatyna)."],
+    radio:["sel","Uzupełniająco / paliatywnie."],
+    immuno:["sel","Niwolumab + ipilimumab w wybranych przypadkach."]}},
+ ]},
+ {group:"Pierś i narząd rodny",cancers:[
+  {name:"Rak piersi",sub:"najczęstszy nowotwór kobiet",m:{
+    surgery:["core","BCT (oszczędzająca) lub amputacja + węzeł wartowniczy/limfadenektomia."],
+    chemo:["core","Zależnie od podtypu — zawsze w HER2+ i potrójnie ujemnym, selektywnie w luminalnym."],
+    radio:["core","Obligatoryjna po BCT; po amputacji przy czynnikach ryzyka."],
+    immuno:["sel","Hormonoterapia przy ER+/PgR+; anty-HER2 (trastuzumab, pertuzumab); pembrolizumab w potrójnie ujemnym."]}},
+  {name:"Rak szyjki macicy",sub:"związek z HPV",m:{
+    surgery:["core","Wczesne stadia — konizacja, radykalne wycięcie macicy."],
+    chemo:["core","Cisplatyna jednoczasowo z radioterapią."],
+    radio:["core","Podstawa poza wczesnymi postaciami; zawsze z brachyterapią."],
+    immuno:["no","Nie jest standardem I rzutu (rozważane w zaawansowanych)."]}},
+  {name:"Rak trzonu macicy",sub:"endometrium · najlepiej rokujący z narządu rodnego",m:{
+    surgery:["core","Podstawa — histerektomia z przydatkami."],
+    chemo:["sel","W typie II lub chorobie zaawansowanej."],
+    radio:["sel","Brachyterapia dopochwowa, teleradioterapia przy podwyższonym ryzyku."],
+    immuno:["no","W wybranych zaawansowanych przypadkach."]}},
+  {name:"Rak jajnika",sub:"często rozpoznawany późno",m:{
+    surgery:["core","Cytoredukcja — podstawa leczenia."],
+    chemo:["core","Pochodne platyny + paklitaksel, standard po operacji."],
+    radio:["no","Rzadko stosowana."],
+    immuno:["sel","Bewacyzumab; olaparyb przy mutacji BRCA / deficycie HRD."]}},
+  {name:"Rak sromu",sub:"90% płaskonabłonkowy",m:{
+    surgery:["core","Podstawa — wycięcie z oceną węzłów pachwinowych."],
+    chemo:["sel","W skojarzeniu z radioterapią w zaawansowanych (III–IVA)."],
+    radio:["sel","Neoadiuwantowo/uzupełniająco przy wysokim ryzyku."],
+    immuno:["no","Nie jest standardem."]}},
+ ]},
+ {group:"Górny odcinek przewodu pokarmowego",cancers:[
+  {name:"Rak przełyku",sub:"płaskonabłonkowy / gruczołowy",m:{
+    surgery:["core","Ezofagektomia w chorobie resekcyjnej."],
+    chemo:["core","Okołooperacyjna; paliatywna w zaawansowanej."],
+    radio:["core","Chemioradioterapia — często definitywna lub przedoperacyjna."],
+    immuno:["sel","Anty-PD-1 w wybranych; anty-HER2 przy gruczolakoraku HER2+."]}},
+  {name:"Rak żołądka",sub:"gruczolakorak (klasyfikacja Laurena)",m:{
+    surgery:["core","Gastrektomia z limfadenektomią D2."],
+    chemo:["core","Okołooperacyjna (FLOT, ECF)."],
+    radio:["sel","Chemioradioterapia uzupełniająca w wybranych przypadkach."],
+    immuno:["sel","Trastuzumab przy HER2+; niwolumab w wybranych zaawansowanych."]}},
+  {name:"Rak trzustki",sub:"gruczolakorak przewodowy · złe rokowanie",m:{
+    surgery:["core","Jedyna metoda potencjalnie wyleczająca (operacja Whipple'a)."],
+    chemo:["core","Adiuwantowa (złoty standard) i paliatywna (FOLFIRINOX, gemcytabina)."],
+    radio:["sel","W guzach granicznie resekcyjnych, w skojarzeniu z chemioterapią."],
+    immuno:["no","Nie jest standardem."]}},
+ ]},
+ {group:"Wątroba i drogi żółciowe",cancers:[
+  {name:"Rak wątrobowokomórkowy (HCC)",sub:"na podłożu marskości / WZW",m:{
+    surgery:["core","Resekcja lub przeszczep wątroby (najlepsze rokowanie)."],
+    chemo:["no","Klasyczna chemioterapia NIEREKOMENDOWANA — mała skuteczność."],
+    radio:["sel","Radioembolizacja (TARE/SIRT); rzadziej teleradioterapia."],
+    immuno:["core","Atezolizumab + bewacyzumab, sorafenib, lenwatynib. Leczenie miejscowe: RFA, TACE."]}},
+  {name:"Rak dróg żółciowych / pęcherzyka",sub:"nowotwór rzadki",m:{
+    surgery:["core","Resekcja radykalna — jedyna szansa wyleczenia."],
+    chemo:["core","Pooperacyjnie kapecytabina; paliatywnie gemcytabina + cisplatyna."],
+    radio:["sel","W wybranych przypadkach."],
+    immuno:["sel","W wybranych, wg profilu molekularnego."]}},
+ ]},
+ {group:"Dolny odcinek przewodu pokarmowego",cancers:[
+  {name:"Rak jelita grubego",sub:"okrężnica / odbytnica",m:{
+    surgery:["core","Podstawa we wszystkich resekcyjnych stadiach (min. 12 węzłów)."],
+    chemo:["core","Uzupełniająca w st. III (i wybranych II); paliatywna FOLFOX/FOLFIRI w st. IV."],
+    radio:["sel","Głównie w raku odbytnicy (przed- i pooperacyjna)."],
+    immuno:["sel","Anty-EGFR (cetuksymab) przy RAS/BRAF wild-type; anty-VEGF; pembrolizumab przy MSI-H."]}},
+  {name:"Rak kanału odbytu",sub:"płaskonabłonkowy · związek z HPV",m:{
+    surgery:["sel","Rezerwowana — doszczętne wycięcie w raku brzegu odbytu."],
+    chemo:["core","5-FU + mitomycyna, jednoczasowo z radioterapią."],
+    radio:["core","Chemioradioterapia to leczenie z wyboru (oszczędza zwieracze)."],
+    immuno:["no","Nie jest standardem."]}},
+ ]},
+ {group:"Układ moczowo-płciowy",cancers:[
+  {name:"Rak gruczołu krokowego",sub:"prostata",m:{
+    surgery:["core","Prostatektomia radykalna (niskie/pośrednie ryzyko)."],
+    chemo:["sel","Głównie w stadium opornym na kastrację."],
+    radio:["core","Alternatywa dla chirurgii; brachyterapia; teleradioterapia."],
+    immuno:["core","Hormonoterapia (ADT) — podstawa w pośrednim/wysokim ryzyku i chorobie rozsianej."]}},
+  {name:"Rak nerki",sub:"jasnokomórkowy (ccRCC) ~80%",m:{
+    surgery:["core","Nefrektomia — podstawa leczenia miejscowego."],
+    chemo:["no","Nieskuteczna, nie stosowana."],
+    radio:["sel","Głównie paliatywnie (przerzuty do kości, mózgu)."],
+    immuno:["core","TKI (sunitynib, sorafenib, kabozantynib); niwolumab + ipilimumab."]}},
+  {name:"Rak pęcherza moczowego",sub:"urotelialny",m:{
+    surgery:["core","TURBT (powierzchowne); cystektomia (naciekające)."],
+    chemo:["core","Dopęcherzowa (powierzchowne) lub systemowa (gemcytabina + cisplatyna, M-VAC)."],
+    radio:["sel","Alternatywa dla cystektomii w wybranych przypadkach."],
+    immuno:["core","BCG dopęcherzowo (powierzchowne); anty-PD-1/PD-L1 w zaawansowanej."]}},
+  {name:"Nowotwory jądra",sub:"nasieniaki / nienasieniaki · dobre rokowanie",m:{
+    surgery:["core","Orchidektomia — podstawa; limfadenektomia zaotrzewnowa w wybranych."],
+    chemo:["core","BEP/EP — bardzo chemiowrażliwe, wysoka wyleczalność."],
+    radio:["sel","Głównie w nasieniakach (wybrane stadia)."],
+    immuno:["no","Nie jest standardem."]}},
+  {name:"Rak prącia",sub:"rzadki · głównie płaskonabłonkowy",m:{
+    surgery:["core","Wycięcie miejscowe / amputacja + węzły pachwinowe."],
+    chemo:["sel","Neoadiuwantowa (T4) i paliatywna, oparta na cisplatynie."],
+    radio:["sel","Brachyterapia małych zmian; z pól zewnętrznych; uzupełniająco przy N+."],
+    immuno:["no","Nie jest standardem."]}},
+ ]},
+ {group:"Skóra i tkanki miękkie",cancers:[
+  {name:"Czerniak",sub:"nowotwór melanocytów",m:{
+    surgery:["core","Wycięcie z marginesem + biopsja węzła wartowniczego — podstawa."],
+    chemo:["no","Historycznie stosowana, dziś zastąpiona nowszymi terapiami."],
+    radio:["sel","Rzadko, głównie paliatywnie."],
+    immuno:["core","Niwolumab, pembrolizumab, ipilimumab; inhibitory BRAF/MEK przy mutacji BRAF V600."]}},
+  {name:"Rak skóry (podstawno-/kolczystokomórkowy)",sub:"związek z UV",m:{
+    surgery:["core","Podstawa leczenia — wycięcie miejscowe."],
+    chemo:["no","Rzadko, tylko zaawansowane przypadki."],
+    radio:["sel","Definitywna, gdy chirurgia da zły efekt funkcjonalny/kosmetyczny."],
+    immuno:["sel","W zaawansowanym raku kolczystokomórkowym (anty-PD-1)."]}},
+  {name:"Mięsaki tkanek miękkich",sub:"pochodzenie mezenchymalne",m:{
+    surgery:["core","Podstawa — szerokie wycięcie z zachowaniem kończyny."],
+    chemo:["sel","W niektórych podtypach (zwł. drobnokomórkowe u dzieci/młodych)."],
+    radio:["core","Przed- lub pooperacyjnie dla zachowania kończyny."],
+    immuno:["no","Rzadko, w wybranych podtypach."]}},
+ ]},
+ {group:"Głowa i szyja oraz gruczoły dokrewne",cancers:[
+  {name:"Nowotwory głowy i szyi",sub:"90% płaskonabłonkowe",m:{
+    surgery:["core","Podstawa we wczesnych stadiach (jama ustna, gardło, krtań)."],
+    chemo:["core","Chemioradioterapia z cisplatyną w miejscowo zaawansowanych."],
+    radio:["core","Ogromna rola — samodzielna (wczesny rak krtani), definitywna, brachyterapia."],
+    immuno:["sel","Anty-PD-1 w nawrotowych/przerzutowych."]}},
+  {name:"Rak tarczycy (zróżnicowany)",sub:"brodawkowaty / pęcherzykowy",m:{
+    surgery:["core","Tyreoidektomia — podstawa leczenia."],
+    chemo:["no","Nieskuteczna, nie stosowana."],
+    radio:["core","Leczenie radiojodem (¹³¹I) — tylko raki zróżnicowane, jodochwytne."],
+    immuno:["sel","Inhibitory kinaz w raku opornym/zaawansowanym."]}},
+  {name:"Rak kory nadnerczy (ACC)",sub:"rzadki · agresywny",m:{
+    surgery:["core","Radykalne wycięcie — podstawa, jedyna szansa wyleczenia."],
+    chemo:["sel","Słaba wrażliwość — EDP-M w chorobie zaawansowanej."],
+    radio:["sel","Uzupełniająco w wybranych przypadkach."],
+    immuno:["core","Mitotan (adrenolityczny) — leczenie uzupełniające u chorych wysokiego ryzyka."]}},
+ ]},
+ {group:"Nowotwory hematologiczne",cancers:[
+  {name:"Chłoniak Hodgkina",sub:"dwa szczyty zachorowań (25–30 i >55 lat)",m:{
+    surgery:["no","Nie stosowana (jedynie biopsja diagnostyczna)."],
+    chemo:["core","Podstawa leczenia (ABVD, BEACOPP)."],
+    radio:["sel","Uzupełniająco na zmiany resztkowe / masywne (bulky)."],
+    immuno:["sel","Brentuksymab vedotin (anty-CD30) w skojarzeniu z chemioterapią."]}},
+  {name:"Chłoniaki nieziarnicze (NHL)",sub:"gł. z komórek B (DLBCL)",m:{
+    surgery:["no","Nie stosowana (biopsja diagnostyczna)."],
+    chemo:["core","Podstawa — immunochemioterapia (np. R-CHOP)."],
+    radio:["sel","W chłoniakach pozawęzłowych bywa metodą z wyboru; na zmiany resztkowe."],
+    immuno:["core","Rytuksymab (anty-CD20); CAR-T w opornych przypadkach."]}},
+  {name:"Szpiczak plazmocytowy",sub:"zespół CRAB · zmiany osteolityczne",m:{
+    surgery:["no","Nie stosowana."],
+    chemo:["core","Podstawa (bortezomib, lenalidomid i inne leki celowane)."],
+    radio:["sel","Paliatywnie na bolesne zmiany kostne."],
+    immuno:["core","Przeszczep autologiczny komórek macierzystych w wybranych przypadkach."]}},
+ ]},
+];
+
+const LABELS={surgery:"Chirurgia",chemo:"Chemioterapia",radio:"Radioterapia",immuno:"Immuno / celowane"};
+const ROLE_TXT={core:"podstawa",sel:"selektywnie",no:"rzadko/nie"};
+const ICON={
+  surgery:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 19 9l-9.5 9.5L5 14z"/><path d="m5 14-2 5 5-2"/></svg>',
+  chemo:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-4 8a2 2 0 0 0 2 3h8a2 2 0 0 0 2-3l-4-8V3"/><path d="M7 15h10"/></svg>',
+  radio:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>',
+  immuno:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.7 8.9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1 1 0 0 1 1.5 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/></svg>'
+};
+
+const atlas=document.getElementById('atlas');
+const tocList=document.getElementById('tocList');
+let idCounter=0;
+const allLinks=[];
+
+DATA.forEach((grp,gi)=>{
+  // sekcja treści
+  const sec=document.createElement('section');
+  sec.className='group';
+  sec.innerHTML=`<div class="group-head"><span class="group-num">${String(gi+1).padStart(2,'0')}</span><span class="group-title">${grp.group}</span><span class="group-line"></span></div>`;
+
+  // grupa w spisie treści
+  const tg=document.createElement('div');
+  tg.className='toc-group';
+  tg.innerHTML=`<div class="toc-group-title">${grp.group}</div>`;
+
+  grp.cancers.forEach(c=>{
+    const id='c'+(idCounter++);
+    // karta
+    const card=document.createElement('article');
+    card.className='card';card.id=id;
+    card.dataset.search=(c.name+' '+c.sub).toLowerCase();
+    let mh='';
+    ['surgery','chemo','radio','immuno'].forEach(k=>{
+      const [role,desc]=c.m[k];
+      mh+=`<div class="method"><div class="method-icon ${k}">${ICON[k]}</div><div class="method-body"><div class="method-top"><span class="method-name ${k}">${LABELS[k]}</span><span class="role ${role}">${ROLE_TXT[role]}</span></div><div class="method-desc">${desc}</div></div></div>`;
+    });
+    card.innerHTML=`<div class="card-name">${c.name}</div><div class="card-sub">${c.sub}</div><div class="methods">${mh}</div>`;
+    sec.appendChild(card);
+
+    // link w spisie treści
+    const a=document.createElement('a');
+    a.className='toc-link';a.href='#'+id;a.textContent=c.name;
+    a.dataset.target=id;a.dataset.search=(c.name+' '+c.sub).toLowerCase();
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      const el=document.getElementById(id);
+      el.scrollIntoView({behavior:'smooth',block:'start'});
+      el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+    });
+    tg.appendChild(a);
+    allLinks.push({a,card,group:tg});
+  });
+  atlas.appendChild(sec);
+  tocList.appendChild(tg);
+});
+
+/* aktywny link wg pozycji scrolla */
+const cards=[...document.querySelectorAll('.card')];
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      const id=en.target.id;
+      allLinks.forEach(l=>l.a.classList.toggle('active',l.a.dataset.target===id));
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+cards.forEach(c=>io.observe(c));
+
+/* filtrowanie spisu treści + kart */
+const tocSearch=document.getElementById('tocSearch');
+const noresult=document.getElementById('noresult');
+tocSearch.addEventListener('input',()=>{
+  const q=tocSearch.value.trim().toLowerCase();
+  let any=false;
+  allLinks.forEach(l=>{
+    const match=!q||l.a.dataset.search.includes(q);
+    l.a.classList.toggle('hidden',!match);
+    l.card.style.display=match?'':'none';
+    if(match)any=true;
+  });
+  // ukryj puste grupy w spisie treści i puste sekcje treści
+  document.querySelectorAll('.toc-group').forEach(g=>{
+    const vis=[...g.querySelectorAll('.toc-link')].some(a=>!a.classList.contains('hidden'));
+    g.style.display=vis?'':'none';
+  });
+  document.querySelectorAll('.content .group').forEach(sec=>{
+    const vis=[...sec.querySelectorAll('.card')].some(c=>c.style.display!=='none');
+    sec.style.display=vis?'':'none';
+  });
+  noresult.classList.toggle('show',!any);
+});
+</script>
+</body>
+</html>
