@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atlas terapii onkologicznej</title>
+<title>Onkologia — atlas terapii, ścieżki leczenia i powtórka</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -22,11 +22,13 @@
     --surgery:#2f8f83;     /* chirurgia - zielono-morski */
     --chemo:#7a5cc4;       /* chemioterapia - śliwka */
     --radio:#c9862a;       /* radioterapia - ochra */
+    --hormo:#3d6fa6;       /* hormonoterapia - stalowy błękit */
     --immuno:#c04f7a;      /* immunoterapia - malina */
 
     --surgery-bg:#e6f1ef;
     --chemo-bg:#efeaf8;
     --radio-bg:#f7eeda;
+    --hormo-bg:#e6eef7;
     --immuno-bg:#f7e7ed;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -38,11 +40,11 @@
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:1180px;margin:0 auto;padding:0 26px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 26px}
 
   /* ---------- HERO ---------- */
   header{
-    padding:70px 0 44px;
+    padding:64px 0 40px;
     border-bottom:2px solid var(--ink);
   }
   .kicker{
@@ -51,87 +53,81 @@
   }
   h1{
     font-family:'Newsreader',serif;font-weight:600;
-    font-size:clamp(40px,6.5vw,78px);line-height:1;letter-spacing:-.02em;margin-bottom:22px;
+    font-size:clamp(38px,6vw,70px);line-height:1;letter-spacing:-.02em;margin-bottom:22px;
   }
   h1 em{font-style:italic;color:var(--chemo)}
-  .lede{font-size:18px;color:var(--ink-2);max-width:640px}
+  .lede{font-size:18px;color:var(--ink-2);max-width:680px}
 
-  .legend{display:flex;flex-wrap:wrap;gap:22px;margin-top:34px}
-  .lg{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600}
+  .legend{display:flex;flex-wrap:wrap;gap:20px;margin-top:32px}
+  .lg{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600}
   .swatch{width:14px;height:14px;border-radius:3px}
   .swatch.surgery{background:var(--surgery)}
   .swatch.chemo{background:var(--chemo)}
   .swatch.radio{background:var(--radio)}
+  .swatch.hormo{background:var(--hormo)}
   .swatch.immuno{background:var(--immuno)}
 
-  /* ---------- LAYOUT: TOC + CONTENT ---------- */
-  .shell{display:grid;grid-template-columns:264px 1fr;gap:44px;align-items:start;padding-top:40px}
+  /* ---------- TAB BAR ---------- */
+  .tabbar-wrap{position:sticky;top:0;z-index:40;background:rgba(246,243,236,.96);backdrop-filter:blur(9px);border-bottom:1px solid var(--line-2)}
+  .tabbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 26px;max-width:1080px;margin:0 auto}
+  .tabs{display:flex;gap:5px;flex-wrap:wrap;flex:1;min-width:0}
+  .tab{
+    font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;font-weight:600;color:var(--ink-2);
+    background:transparent;border:1px solid transparent;border-radius:9px;padding:8px 13px;
+    cursor:pointer;white-space:nowrap;transition:all .13s ease;
+  }
+  .tab:hover{background:var(--paper-2);color:var(--ink)}
+  .tab.active{background:var(--ink);color:var(--paper)}
+  .tab-search{
+    background:var(--card);border:1px solid var(--line-2);border-radius:9px;padding:9px 12px;
+    font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;color:var(--ink);min-width:210px;
+  }
+  .tab-search:focus{outline:2px solid var(--chemo);outline-offset:1px;border-color:transparent}
+  body.searching .tab{opacity:.45}
 
-  /* ---------- TABLE OF CONTENTS ---------- */
-  .toc{position:sticky;top:20px;max-height:calc(100vh - 40px);overflow-y:auto;padding-right:8px}
-  .toc-head{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;
-    text-transform:uppercase;color:var(--ink-3);font-weight:600;
-    padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--line-2);
+  /* ---------- PANELS ---------- */
+  .panel{display:none;padding:40px 0 20px}
+  .panel.active{display:block}
+  body.searching .panel{display:block;padding-top:22px}
+  .panel-title{
+    display:none;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--chemo);font-weight:600;margin:8px 0 20px;
+    padding-bottom:9px;border-bottom:1px solid var(--line-2);
   }
-  .toc-search{
-    width:100%;background:var(--card);border:1px solid var(--line-2);
-    border-radius:9px;padding:9px 12px;font-family:'IBM Plex Sans',sans-serif;
-    font-size:13.5px;color:var(--ink);margin-bottom:16px;
-  }
-  .toc-search:focus{outline:2px solid var(--chemo);outline-offset:1px;border-color:transparent}
-  .toc-group{margin-bottom:16px}
-  .toc-group-title{
-    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
-    color:var(--ink-3);margin-bottom:6px;
-  }
-  .toc-link{
-    display:block;font-size:13.5px;color:var(--ink-2);text-decoration:none;
-    padding:4px 10px;border-radius:7px;border-left:2px solid transparent;
-    margin-left:-2px;transition:all .13s ease;line-height:1.35;
-  }
-  .toc-link:hover{background:var(--paper-2);color:var(--ink)}
-  .toc-link.active{
-    background:var(--card);color:var(--ink);font-weight:600;
-    border-left-color:var(--chemo);box-shadow:0 1px 3px rgba(0,0,0,.05);
-  }
-  .toc-link.hidden{display:none}
+  body.searching .panel-title{display:block}
+  .intro{font-size:15px;color:var(--ink-2);max-width:720px;margin-bottom:34px}
+  body.searching .intro{display:none}
 
-  /* ---------- CONTENT ---------- */
-  .content{min-width:0}
-  .group{margin-bottom:52px}
-  .group-head{
-    display:flex;align-items:baseline;gap:14px;margin-bottom:22px;
-  }
+  /* ---------- GROUPS ---------- */
+  .group{margin-bottom:48px}
+  .group-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
   .group-num{
     font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;
     color:#fff;background:var(--ink);padding:3px 9px;border-radius:6px;
   }
-  .group-title{font-family:'Newsreader',serif;font-weight:600;font-size:28px;letter-spacing:-.01em}
+  .group-kicker{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-3);padding:5px 0;
+  }
+  .group-title{font-family:'Newsreader',serif;font-weight:600;font-size:27px;letter-spacing:-.01em}
   .group-line{flex:1;height:1px;background:var(--line-2)}
 
+  /* ---------- CARDS ---------- */
   .card{
     background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:26px 28px;margin-bottom:18px;scroll-margin-top:24px;
+    padding:24px 26px;margin-bottom:18px;scroll-margin-top:90px;
     box-shadow:0 1px 2px rgba(28,26,23,.03);
   }
-  .card.flash{animation:flash 1.4s ease}
-  @keyframes flash{
-    0%{box-shadow:0 0 0 3px var(--chemo)}
-    100%{box-shadow:0 1px 2px rgba(28,26,23,.03)}
-  }
-  .card-name{font-family:'Newsreader',serif;font-weight:600;font-size:23px;letter-spacing:-.01em;margin-bottom:2px}
-  .card-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-3);margin-bottom:20px}
+  .card-name{font-family:'Newsreader',serif;font-weight:600;font-size:22px;letter-spacing:-.01em;margin-bottom:2px}
+  .card-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-3);margin-bottom:18px}
 
-  .methods{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}
+  .methods{display:grid;grid-template-columns:1fr 1fr;gap:15px 24px}
   .method{display:flex;gap:12px;align-items:flex-start}
-  .method-icon{
-    width:34px;height:34px;border-radius:9px;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-  }
+  .method-icon{width:34px;height:34px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
   .method-icon.surgery{background:var(--surgery-bg);color:var(--surgery)}
   .method-icon.chemo{background:var(--chemo-bg);color:var(--chemo)}
   .method-icon.radio{background:var(--radio-bg);color:var(--radio)}
+  .method-icon.hormo{background:var(--hormo-bg);color:var(--hormo)}
   .method-icon.immuno{background:var(--immuno-bg);color:var(--immuno)}
   .method-body{flex:1;min-width:0}
   .method-top{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
@@ -139,44 +135,93 @@
   .method-name.surgery{color:var(--surgery)}
   .method-name.chemo{color:var(--chemo)}
   .method-name.radio{color:var(--radio)}
+  .method-name.hormo{color:var(--hormo)}
   .method-name.immuno{color:var(--immuno)}
   .role{font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.03em}
   .role.core{background:#dff0e2;color:#2c7a45}
   .role.sel{background:#f7eeda;color:#a56d1a}
-  .role.no{background:#eee9e0;color:#98918;color:var(--ink-3)}
-  .method-desc{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  .role.no{background:#eee9e0;color:var(--ink-3)}
+  .method-desc{font-size:13px;color:var(--ink-2);line-height:1.5}
+
+  /* ---------- HIGH-YIELD ELEMENTS ---------- */
+  table.hy{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.hy th{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.06em;color:var(--ink-3);text-align:left;padding:8px 12px;border-bottom:1px solid var(--line-2);
+  }
+  table.hy td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top}
+  table.hy tr:last-child td{border-bottom:none}
+  table.hy tr:hover td{background:var(--paper-2)}
+  ul.hy{list-style:none}
+  ul.hy li{position:relative;padding-left:18px;font-size:13.5px;color:var(--ink-2);margin:7px 0;line-height:1.5}
+  ul.hy li::before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:var(--line-2)}
+  .k{color:var(--chemo);font-weight:600}
+  .hl{background:#f7eeda;color:#8a5a12;padding:0 4px;border-radius:4px;font-weight:600}
+  .callout{border-left:3px solid var(--radio);background:var(--paper-2);border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0 0;font-size:13.5px;color:var(--ink-2)}
+  .callout.warn{border-left-color:var(--immuno)}
+  .callout.tip{border-left-color:var(--surgery)}
+  .callout.info{border-left-color:var(--hormo)}
+  .callout strong{color:var(--ink)}
+  .subgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px 30px}
+  .subgrid h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--ink);margin-bottom:6px}
+  .pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 10px;border-radius:20px;background:var(--paper-2);border:1px solid var(--line-2);color:var(--ink-2);margin:3px 6px 3px 0}
+  .pill.g{border-color:#bcd9c4;color:#2c7a45}
+  .pill.p{border-color:#d3c6ee;color:#6a49b8}
+  .pill.o{border-color:#e6cfa0;color:#a56d1a}
+
+  /* ---------- PATHWAY (ścieżki) ---------- */
+  .flow{display:flex;flex-direction:column;gap:0}
+  .step{display:flex;gap:16px;position:relative;padding-bottom:20px}
+  .step:not(:last-child)::before{content:"";position:absolute;left:15px;top:34px;bottom:0;width:2px;background:var(--line-2)}
+  .step-dot{
+    width:32px;height:32px;border-radius:50%;flex-shrink:0;z-index:1;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;
+    background:var(--ink);color:var(--paper);
+  }
+  .step-body{flex:1;padding-top:4px}
+  .step-body h5{font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .step-body p{font-size:13.5px;color:var(--ink-2);margin:0}
+  .branch{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+  .branch-item{background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--chemo);border-radius:0 10px 10px 0;padding:10px 14px}
+  .branch-item.hr{border-left-color:var(--hormo)}
+  .branch-item.her2{border-left-color:var(--surgery)}
+  .branch-item.tnbc{border-left-color:var(--immuno)}
+  .branch-item b{display:block;font-size:12.5px;color:var(--ink);margin-bottom:3px}
+  .branch-item span{font-size:12.5px;color:var(--ink-2);line-height:1.45}
 
   /* ---------- PRINCIPLE ---------- */
-  .principle{
-    background:var(--ink);color:var(--paper);border-radius:18px;padding:38px;margin:20px 0 50px;
-  }
-  .principle h3{font-family:'Newsreader',serif;font-weight:600;font-size:26px;margin-bottom:22px;color:#fff}
-  .prin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+  .principle{background:var(--ink);color:var(--paper);border-radius:18px;padding:36px;margin:24px 0 20px}
+  .principle h3{font-family:'Newsreader',serif;font-weight:600;font-size:25px;margin-bottom:22px;color:#fff}
+  .prin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
   .prin-item{display:flex;gap:13px;align-items:flex-start}
-  .prin-bar{width:4px;align-self:stretch;min-height:46px;border-radius:4px;flex-shrink:0}
+  .prin-bar{width:4px;align-self:stretch;min-height:44px;border-radius:4px;flex-shrink:0}
   .prin-bar.surgery{background:var(--surgery)}
   .prin-bar.chemo{background:var(--chemo)}
   .prin-bar.radio{background:var(--radio)}
+  .prin-bar.hormo{background:var(--hormo)}
   .prin-bar.immuno{background:var(--immuno)}
-  .prin-item strong{display:block;font-size:15px;margin-bottom:2px;color:#fff}
-  .prin-item span{font-size:13px;color:#b8b2a6}
-  .prin-note{margin-top:26px;padding-top:22px;border-top:1px solid #38342e;font-size:14.5px;color:#cfc9bd}
+  .prin-item strong{display:block;font-size:14.5px;margin-bottom:2px;color:#fff}
+  .prin-item span{font-size:12.5px;color:#b8b2a6}
+  .prin-note{margin-top:24px;padding-top:20px;border-top:1px solid #38342e;font-size:14px;color:#cfc9bd}
   .prin-note strong{color:#fff}
 
   .noresult{text-align:center;padding:50px;color:var(--ink-3);font-size:15px;display:none}
   .noresult.show{display:block}
 
-  footer{border-top:2px solid var(--ink);padding:30px 0 50px;margin-top:20px;font-size:12.5px;color:var(--ink-3)}
-  footer p{max-width:760px;line-height:1.65}
+  footer{border-top:2px solid var(--ink);padding:28px 0 50px;margin-top:20px;font-size:12.5px;color:var(--ink-3)}
+  footer p{max-width:820px;line-height:1.65;margin-bottom:10px}
 
-  @media(max-width:900px){
-    .shell{grid-template-columns:1fr;gap:0}
-    .toc{position:static;max-height:none;margin-bottom:40px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+  @media(max-width:820px){
     .methods{grid-template-columns:1fr}
+    .subgrid{grid-template-columns:1fr}
+    .tab-search{flex:1;min-width:140px}
   }
   @media(max-width:560px){
-    header{padding:48px 0 32px}
-    .principle{padding:26px}
+    header{padding:44px 0 30px}
+    .principle{padding:24px}
+    .card{padding:20px 18px}
+    table.hy{font-size:12.5px}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}}
 </style>
@@ -185,49 +230,483 @@
 
 <header>
   <div class="wrap">
-    <div class="kicker">Onkologia · orientacja w leczeniu</div>
-    <h1>Atlas <em>terapii</em><br>nowotworów</h1>
-    <p class="lede">Cztery metody leczenia, jeden stały kod kolorów. Sprawdź szybko, gdzie dana metoda jest podstawą, a gdzie tylko uzupełnieniem — dla każdego z 30 nowotworów.</p>
+    <div class="kicker">Onkologia · przygotowanie do egzaminu</div>
+    <h1>Atlas terapii,<br><em>ścieżki</em> i powtórka</h1>
+    <p class="lede">Zakładki: mapa metod leczenia dla każdego nowotworu, algorytmy decyzyjne (m.in. rak piersi), leczenie systemowe oraz zestaw najważniejszych faktów egzaminacyjnych. Jeden stały kod kolorów metod.</p>
     <div class="legend">
       <div class="lg"><span class="swatch surgery"></span>Chirurgia</div>
-      <div class="lg"><span class="swatch chemo"></span>Chemioterapia</div>
       <div class="lg"><span class="swatch radio"></span>Radioterapia</div>
-      <div class="lg"><span class="swatch immuno"></span>Immunoterapia / celowane</div>
+      <div class="lg"><span class="swatch chemo"></span>Chemioterapia</div>
+      <div class="lg"><span class="swatch hormo"></span>Hormonoterapia</div>
+      <div class="lg"><span class="swatch immuno"></span>Immuno / celowane</div>
     </div>
   </div>
 </header>
 
+<div class="tabbar-wrap">
+  <div class="tabbar">
+    <div class="tabs">
+      <button class="tab active" data-tab="atlas">Atlas terapii</button>
+      <button class="tab" data-tab="sciezki">Ścieżki leczenia</button>
+      <button class="tab" data-tab="systemowe">Leczenie systemowe</button>
+      <button class="tab" data-tab="podstawy">Podstawy</button>
+      <button class="tab" data-tab="nagle">Stany nagłe</button>
+      <button class="tab" data-tab="bwg">Ból · wspomagające · genetyka</button>
+      <button class="tab" data-tab="szybka">Szybka powtórka</button>
+    </div>
+    <input type="text" class="tab-search" id="search" placeholder="Szukaj we wszystkich zakładkach…" autocomplete="off">
+  </div>
+</div>
+
 <div class="wrap">
-  <div class="shell">
-    <!-- SPIS TREŚCI -->
-    <nav class="toc" id="toc">
-      <div class="toc-head">Spis nowotworów</div>
-      <input type="text" class="toc-search" id="tocSearch" placeholder="Filtruj listę…" autocomplete="off">
-      <div id="tocList"></div>
-    </nav>
+  <main>
 
-    <!-- TREŚĆ -->
-    <div class="content">
+    <!-- ============ PANEL: ATLAS ============ -->
+    <section class="panel active" id="panel-atlas">
+      <div class="panel-title">Atlas terapii</div>
+      <p class="intro">Dla każdego nowotworu: rola pięciu metod leczenia — <b>podstawa</b>, <b>selektywnie</b> lub <b>rzadko/nie</b>. Metody miejscowe (chirurgia, radioterapia) kontra systemowe (chemioterapia, hormonoterapia, immuno/celowane).</p>
       <div id="atlas"></div>
-      <div class="noresult" id="noresult">Brak nowotworów pasujących do wyszukiwania.</div>
-
       <div class="principle">
         <h3>Zasada, która porządkuje wszystko</h3>
         <div class="prin-grid">
-          <div class="prin-item"><div class="prin-bar surgery"></div><div><strong>Chirurgia</strong><span>Leczenie miejscowe. Podstawa, gdy guz jest ograniczony i resekcyjny.</span></div></div>
-          <div class="prin-item"><div class="prin-bar radio"></div><div><strong>Radioterapia</strong><span>Leczenie miejscowo-regionalne. Alternatywa lub uzupełnienie chirurgii.</span></div></div>
-          <div class="prin-item"><div class="prin-bar chemo"></div><div><strong>Chemioterapia</strong><span>Leczenie systemowe. Działa na cały organizm — mikroprzerzuty, choroba rozsiana.</span></div></div>
-          <div class="prin-item"><div class="prin-bar immuno"></div><div><strong>Immuno / celowane</strong><span>Leczenie systemowe „precyzyjne". Zależne od cech biologicznych guza.</span></div></div>
+          <div class="prin-item"><div class="prin-bar surgery"></div><div><strong>Chirurgia</strong><span>Miejscowa. Podstawa, gdy guz jest ograniczony i resekcyjny.</span></div></div>
+          <div class="prin-item"><div class="prin-bar radio"></div><div><strong>Radioterapia</strong><span>Miejscowo-regionalna. Alternatywa lub uzupełnienie chirurgii.</span></div></div>
+          <div class="prin-item"><div class="prin-bar chemo"></div><div><strong>Chemioterapia</strong><span>Systemowa. Działa na cały organizm — mikroprzerzuty, choroba rozsiana.</span></div></div>
+          <div class="prin-item"><div class="prin-bar hormo"></div><div><strong>Hormonoterapia</strong><span>Systemowa. Tylko nowotwory hormonozależne: pierś, prostata, endometrium.</span></div></div>
+          <div class="prin-item"><div class="prin-bar immuno"></div><div><strong>Immuno / celowane</strong><span>Systemowa „precyzyjna". Zależna od cech biologicznych guza.</span></div></div>
         </div>
         <p class="prin-note"><strong>Guzy lite kontra nowotwory hematologiczne:</strong> chłoniaki, białaczki i szpiczak z zasady nie mają chirurgii jako metody leczącej — nie tworzą jednej masy do wycięcia.</p>
       </div>
-    </div>
-  </div>
+    </section>
+
+    <!-- ============ PANEL: ŚCIEŻKI ============ -->
+    <section class="panel" id="panel-sciezki">
+      <div class="panel-title">Ścieżki leczenia</div>
+      <p class="intro">Algorytmy decyzyjne pokazujące, <b>jak dobiera się leczenie</b> — na przykładzie raka piersi (wg podtypu i wg zaawansowania) oraz raka płuca, jelita grubego i prostaty.</p>
+
+      <!-- RAK PIERSI -->
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Studium przypadku</span><span class="group-title">Rak piersi — ścieżki leczenia</span><span class="group-line"></span></div>
+
+        <article class="card">
+          <div class="card-name">Krok 1 — diagnoza i podtyp molekularny</div>
+          <div class="card-sub">to od tego zależy cała ścieżka</div>
+          <ul class="hy">
+            <li>Diagnostyka: mammografia + USG, <span class="k">biopsja gruboigłowa</span> (MR w wybranych przypadkach)</li>
+            <li>Z materiału ocenia się: <span class="k">ER, PR</span> (receptory hormonalne), <span class="k">HER2</span>, indeks proliferacji <span class="k">Ki-67</span></li>
+            <li>Wynik tej oceny wyznacza podtyp — a podtyp determinuje leczenie systemowe</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-name">Ścieżka A — wg podtypu molekularnego</div>
+          <div class="card-sub">czym leczymy „od środka"</div>
+          <div class="branch">
+            <div class="branch-item hr"><b>Luminalny A (ER+/PR+, HER2−, Ki-67 niski)</b><span>Hormonoterapia — podstawa. Chemioterapia rzadko.</span></div>
+            <div class="branch-item hr"><b>Luminalny B (ER+, Ki-67 wysoki / HER2±)</b><span>Hormonoterapia + chemioterapia; + inhibitor CDK4/6 w zaawansowanym.</span></div>
+            <div class="branch-item her2"><b>HER2-dodatni</b><span>Chemioterapia + anty-HER2 (trastuzumab, pertuzumab).</span></div>
+            <div class="branch-item tnbc"><b>Potrójnie ujemny (TNBC)</b><span>Chemioterapia; pembrolizumab; inhibitor PARP przy mutacji BRCA.</span></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-name">Ścieżka B — wg zaawansowania</div>
+          <div class="card-sub">kolejność: miejscowe vs systemowe</div>
+          <div class="flow">
+            <div class="step"><div class="step-dot">1</div><div class="step-body">
+              <h5>Wczesny, operacyjny</h5>
+              <p>Leczenie miejscowe: <b>BCT (oszczędzające) + radioterapia</b> lub mastektomia, zawsze z oceną <b>węzła wartowniczego</b>. Następnie leczenie uzupełniające systemowe dobrane wg podtypu.</p>
+            </div></div>
+            <div class="step"><div class="step-dot">2</div><div class="step-body">
+              <h5>Miejscowo zaawansowany / duży guz</h5>
+              <p>Najpierw <b>leczenie neoadiuwantowe</b> (przedoperacyjne, systemowe) — zwłaszcza w HER2+ i TNBC. Cel: zmniejszyć guz (umożliwić BCT) i ocenić odpowiedź (pCR). Potem operacja + uzupełnienie.</p>
+            </div></div>
+            <div class="step"><div class="step-dot">3</div><div class="step-body">
+              <h5>Rozsiany (przerzutowy, st. IV)</h5>
+              <p>Leczenie <b>systemowe paliatywne</b> wg podtypu: HR+ → hormonoterapia + CDK4/6; HER2+ → anty-HER2; TNBC → chemioterapia/immunoterapia. Leczenie miejscowe tylko objawowo.</p>
+            </div></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-name">Pojęcia, które muszą być jasne</div>
+          <div class="card-sub">neoadiuwant · adiuwant · węzeł wartowniczy</div>
+          <ul class="hy">
+            <li><span class="k">Neoadiuwantowe</span> = przed operacją (zmniejsza guz, umożliwia zabieg oszczędzający, testuje wrażliwość na leczenie)</li>
+            <li><span class="k">Adiuwantowe</span> = po operacji (niszczy mikroprzerzuty, zmniejsza ryzyko nawrotu)</li>
+            <li><span class="k">Węzeł wartowniczy</span> = pierwszy węzeł spływu chłonki; ujemny → można oszczędzić pachę</li>
+          </ul>
+          <div class="callout warn">Przeciwwskazania do BCT: rak <b>wieloogniskowy/wieloośrodkowy</b>, przeciwwskazania do radioterapii piersi, brak możliwości czystego marginesu.</div>
+        </article>
+
+        <article class="card">
+          <div class="card-name">Hormonoterapia uzupełniająca — szczegóły</div>
+          <div class="card-sub">tylko przy ER+/PR+</div>
+          <ul class="hy">
+            <li><span class="k">Tamoksyfen</span> (SERM) — przed i po menopauzie; 20 mg/d. Działania niep.: uderzenia gorąca, powikłania zakrzepowo-zatorowe, rozrost/rak endometrium</li>
+            <li><span class="k">Inhibitory aromatazy</span> (letrozol, anastrozol, eksemestan) — po menopauzie lub + supresja jajników przed menopauzą; ryzyko osteoporozy, bóle stawowe</li>
+            <li><span class="k">Fulwestrant</span> + inhibitor CDK4/6 (palbo-/rybo-/abemacyklib) w zaawansowanym HR+/HER2−</li>
+            <li>Ablacja/supresja jajników (GnRH) u kobiet przed menopauzą</li>
+          </ul>
+        </article>
+      </section>
+
+      <!-- INNE ŚCIEŻKI -->
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Skrót</span><span class="group-title">Ścieżki w innych nowotworach</span><span class="group-line"></span></div>
+        <div class="subgrid">
+          <article class="card">
+            <div class="card-name">Rak płuca — NDRP</div>
+            <div class="card-sub">wg stopnia + biomarkerów</div>
+            <ul class="hy">
+              <li><b>I–II (operacyjny):</b> resekcja + adiuwantowa CHTH (w II)</li>
+              <li><b>III (miejscowo zaawansowany):</b> radiochemioterapia + konsolidacja durwalumabem</li>
+              <li><b>IV:</b> wg biomarkera — <span class="k">EGFR/ALK</span> → TKI; wysokie <span class="k">PD-L1</span> → immunoterapia; inaczej CHTH ± immuno</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Rak jelita grubego</div>
+            <div class="card-sub">okrężnica vs odbytnica</div>
+            <ul class="hy">
+              <li><b>Okrężnica I–III:</b> resekcja; adiuwantowy FOLFOX w st. III</li>
+              <li><b>Odbytnica:</b> przedoperacyjna radio(chemio)terapia → TME → uzupełnienie</li>
+              <li><b>Rozsiany:</b> FOLFOX/FOLFIRI ± anty-EGFR (RAS/BRAF wt, lewostronny) lub bewacyzumab; MSI-H → immunoterapia; metastazektomia wątroby</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Rak gruczołu krokowego</div>
+            <div class="card-sub">wg grupy ryzyka</div>
+            <ul class="hy">
+              <li><b>Niskie ryzyko:</b> aktywny nadzór</li>
+              <li><b>Pośrednie/wysokie:</b> prostatektomia radykalna lub radioterapia + <span class="k">ADT</span></li>
+              <li><b>Rozsiany hormonowrażliwy:</b> ADT + docetaksel lub abirateron/enzalutamid</li>
+              <li><b>Oporny na kastrację (CRPC):</b> nowe leki hormonalne, ¹⁷⁷Lu-PSMA, PARP przy BRCA</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Reguła ogólna</div>
+            <div class="card-sub">jak myśleć o ścieżce</div>
+            <ul class="hy">
+              <li>Guz <b>ograniczony</b> → leczenie miejscowe (chirurgia/RTH) jako podstawa</li>
+              <li>Guz <b>rozsiany</b> → leczenie systemowe (CHTH/hormono/immuno)</li>
+              <li><b>Biomarkery</b> (ER, HER2, EGFR, RAS, PD-L1, BRCA) coraz częściej decydują o wyborze leku</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ PANEL: LECZENIE SYSTEMOWE ============ -->
+    <section class="panel" id="panel-systemowe">
+      <div class="panel-title">Leczenie systemowe</div>
+      <p class="intro">Leczenie działające na cały organizm: hormonoterapia, leczenie ukierunkowane molekularnie i immunoterapia.</p>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Systemowe</span><span class="group-title">Hormonoterapia</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Podstawy — tylko nowotwory hormonozależne</div>
+          <div class="card-sub">pierś · prostata · trzon macicy</div>
+          <table class="hy">
+            <tr><th>Nowotwór</th><th>Hormon w etiologii</th><th>Leczenie hormonalne</th></tr>
+            <tr><td>Rak piersi</td><td>estrogeny (czynnik predykcyjny: <span class="k">ER</span>)</td><td>tamoksyfen, inhibitory aromatazy, fulwestrant, ± CDK4/6</td></tr>
+            <tr><td>Rak gruczołu krokowego</td><td>dihydrotestosteron</td><td>ADT: analogi/antagoniści GnRH, antyandrogeny, abirateron/enzalutamid</td></tr>
+            <tr><td>Rak trzonu macicy</td><td>estrogeny bez osłony progestagenów</td><td>progestageny (wybrane przypadki)</td></tr>
+            <tr><td>Rak tarczycy (zróżnicowany)</td><td>estrogeny (wpływ)</td><td>supresja TSH lewotyroksyną (uzupełniająco)</td></tr>
+          </table>
+        </article>
+        <div class="subgrid">
+          <article class="card">
+            <div class="card-name">Rak piersi — leki</div>
+            <div class="card-sub">wg statusu menopauzalnego</div>
+            <ul class="hy">
+              <li><span class="k">Tamoksyfen</span> — przed i po menopauzie</li>
+              <li><span class="k">Inhibitory aromatazy</span> (letrozol, anastrozol, eksemestan) — po menopauzie lub + supresja jajników</li>
+              <li><span class="k">Fulwestrant</span> — antyestrogen, po menopauzie, + CDK4/6</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Prostata — kastracja</div>
+            <div class="card-sub">cel: testosteron &lt; 50 ng/dl</div>
+            <ul class="hy">
+              <li>Analogi <span class="k">GnRH</span> (goserelina, leuprorelina) — uwaga na efekt <b>flare</b> → osłona antyandrogenem</li>
+              <li>Antagonista GnRH: <span class="k">degareliks</span> (szybki efekt)</li>
+              <li>Antyandrogeny (bikalutamid); nowe: abirateron (+prednizon), enzalutamid</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Systemowe</span><span class="group-title">Cele molekularne</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Biomarker → lek → nowotwór</div>
+          <div class="card-sub">predykcja odpowiedzi</div>
+          <table class="hy">
+            <tr><th>Cel / mutacja</th><th>Lek(i)</th><th>Nowotwór</th></tr>
+            <tr><td><span class="k">EGFR</span> (mutacja aktywująca)</td><td>ozymertynib, erlotynib</td><td>Rak płuca (NDRP)</td></tr>
+            <tr><td><span class="k">ALK / ROS1</span></td><td>kryzotynib, alektynib</td><td>Rak płuca (NDRP)</td></tr>
+            <tr><td><span class="k">BRAF V600</span></td><td>wemurafenib/dabrafenib + trametynib</td><td>Czerniak</td></tr>
+            <tr><td><span class="k">HER2</span> (nadekspresja)</td><td>trastuzumab, pertuzumab, T-DM1</td><td>Rak piersi, żołądka</td></tr>
+            <tr><td><span class="k">EGFR</span> (przy RAS <b>bez</b> mutacji)</td><td>cetuksymab, panitumumab</td><td>Rak jelita grubego, głowy i szyi</td></tr>
+            <tr><td><span class="k">RAS / KRAS</span> mutacja</td><td>— (predyktor <b>braku</b> odpowiedzi na anty-EGFR)</td><td>Rak jelita grubego</td></tr>
+            <tr><td><span class="k">VEGF</span> / angiogeneza</td><td>bewacyzumab</td><td>CRC, płuco, jajnik</td></tr>
+            <tr><td><span class="k">BRCA</span> mutacja</td><td>inhibitory PARP (olaparyb)</td><td>Jajnik, pierś, prostata, trzustka</td></tr>
+            <tr><td><span class="k">c-KIT</span></td><td>imatynib</td><td>GIST</td></tr>
+          </table>
+        </article>
+      </section>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Systemowe</span><span class="group-title">Immunoterapia</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Inhibitory punktów kontrolnych + irAE</div>
+          <div class="card-sub">odblokowanie limfocytów T</div>
+          <div class="subgrid">
+            <div>
+              <h5>Leki wg celu</h5>
+              <ul class="hy">
+                <li><span class="k">anty-PD-1:</span> niwolumab, pembrolizumab</li>
+                <li><span class="k">anty-PD-L1:</span> atezolizumab, durwalumab</li>
+                <li><span class="k">anty-CTLA-4:</span> ipilimumab</li>
+                <li>Kluczowe: czerniak, NDRP, nerka, pęcherz, głowa i szyja</li>
+              </ul>
+            </div>
+            <div>
+              <h5>Działania niepożądane (irAE)</h5>
+              <ul class="hy">
+                <li>Skóra (wysypka), jelita (<b>zapalenie / biegunka</b>)</li>
+                <li>Tarczyca, przysadka (endokrynopatie)</li>
+                <li>Wątroba, płuca (<b>zapalenie płuc</b>)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout warn">Leczenie umiarkowanych/ciężkich irAE: <span class="hl">glikokortykosteroidy</span>. Podłoże <strong>autoimmunologiczne</strong> — inne niż toksyczność chemioterapii.</div>
+        </article>
+      </section>
+    </section>
+
+    <!-- ============ PANEL: PODSTAWY ============ -->
+    <section class="panel" id="panel-podstawy">
+      <div class="panel-title">Podstawy</div>
+      <p class="intro">Epidemiologia, profilaktyka i markery — fundament pytań wstępnych.</p>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Podstawy</span><span class="group-title">Epidemiologia i profilaktyka</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Najczęstsze nowotwory w Polsce</div>
+          <div class="card-sub">zachorowania vs. zgony</div>
+          <div class="subgrid">
+            <div><h5>Mężczyźni — zachorowania</h5><ul class="hy"><li>Rak gruczołu krokowego</li><li>Rak płuca</li><li>Rak jelita grubego</li></ul></div>
+            <div><h5>Kobiety — zachorowania</h5><ul class="hy"><li>Rak piersi</li><li>Rak płuca</li><li>Rak jelita grubego</li></ul></div>
+          </div>
+          <div class="callout"><strong>Główna przyczyna zgonów nowotworowych</strong> u obu płci to <span class="hl">rak płuca</span> — u kobiet wyprzedził raka piersi.</div>
+        </article>
+        <article class="card">
+          <div class="card-name">Programy przesiewowe w Polsce</div>
+          <div class="card-sub">profilaktyka wtórna · bardzo częste</div>
+          <table class="hy">
+            <tr><th>Nowotwór</th><th>Badanie</th><th>Grupa / wiek</th><th>Częstość</th></tr>
+            <tr><td>Rak piersi</td><td>Mammografia</td><td>kobiety <span class="k">50–69 lat</span></td><td>co 2 lata</td></tr>
+            <tr><td>Rak szyjki macicy</td><td>Cytologia</td><td>kobiety <span class="k">25–59 lat</span></td><td>co 3 lata</td></tr>
+            <tr><td>Rak jelita grubego</td><td>Kolonoskopia</td><td><span class="k">50–65 lat</span> (40–65 z wywiadem)</td><td>jednorazowo / wg ryzyka</td></tr>
+            <tr><td>Rak szyjki (prof. pierwotna)</td><td>Szczepienie HPV</td><td>dzieci <span class="k">12–13 lat</span></td><td>wg schematu</td></tr>
+          </table>
+          <div class="callout tip">Mammografia (50–69 lat) zmniejsza umieralność o <span class="hl">~30–35%</span>. Profilaktyka: pierwotna = eliminacja ryzyka; wtórna = wczesne wykrywanie; trzeciorzędowa = zapobieganie nawrotom.</div>
+        </article>
+        <article class="card">
+          <div class="card-name">Kluczowe czynniki ryzyka</div>
+          <div class="card-sub">modyfikowalne i zakaźne</div>
+          <ul class="hy">
+            <li><span class="k">Palenie tytoniu</span> — najważniejszy pojedynczy czynnik (płuco, głowa-szyja, pęcherz, trzustka)</li>
+            <li>Zakażenia: <span class="k">HPV</span> → szyjka · <span class="k">HBV/HCV</span> → wątroba · <span class="k">H. pylori</span> → żołądek</li>
+            <li>UV → czerniak · azbest → międzybłoniak opłucnej</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Podstawy</span><span class="group-title">Markery nowotworowe</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Marker → nowotwór</div>
+          <div class="card-sub">głównie monitorowanie i nawrót</div>
+          <table class="hy">
+            <tr><th>Marker</th><th>Nowotwór</th><th>Uwagi</th></tr>
+            <tr><td><span class="k">PSA</span></td><td>Rak gruczołu krokowego</td><td>także wznowa biochemiczna</td></tr>
+            <tr><td><span class="k">CEA</span></td><td>Rak jelita grubego</td><td>monitorowanie (z CA 19-9); nieswoisty</td></tr>
+            <tr><td><span class="k">CA 19-9</span></td><td>Rak trzustki, dróg żółciowych</td><td>rośnie też w zapaleniach</td></tr>
+            <tr><td><span class="k">CA 125</span> (+ HE4)</td><td>Rak jajnika</td><td>monitorowanie, nawrót</td></tr>
+            <tr><td><span class="k">CA 15-3</span></td><td>Rak piersi</td><td>tylko monitorowanie — NIE do rozpoznania</td></tr>
+            <tr><td><span class="k">AFP</span></td><td>Rak wątrobowokomórkowy, guzy zarodkowe</td><td>t½ ≈ 5–7 dni</td></tr>
+            <tr><td><span class="k">β-hCG</span></td><td>Guzy zarodkowe, kosmówka</td><td>t½ ≈ 1–3 dni</td></tr>
+            <tr><td><span class="k">AFP + β-hCG + LDH</span></td><td>Nowotwory jądra</td><td>stratyfikacja po orchidektomii</td></tr>
+            <tr><td><span class="k">Tyreoglobulina</span></td><td>Zróżnicowany rak tarczycy</td><td>po tyreoidektomii</td></tr>
+            <tr><td><span class="k">Kalcytonina</span></td><td>Rak rdzeniasty tarczycy</td><td>—</td></tr>
+            <tr><td><span class="k">Chromogranina A</span></td><td>Nowotwory neuroendokrynne (NET)</td><td>—</td></tr>
+          </table>
+          <div class="callout warn">Markery są <strong>mało swoiste</strong> — nie służą jako badania przesiewowe (wyjątek dyskusyjny: PSA) ani zwykle do rozpoznania.</div>
+        </article>
+      </section>
+    </section>
+
+    <!-- ============ PANEL: STANY NAGŁE ============ -->
+    <section class="panel" id="panel-nagle">
+      <div class="panel-title">Stany nagłe i zespoły paranowotworowe</div>
+      <p class="intro">Sytuacje wymagające szybkiej reakcji oraz objawy odległe od guza.</p>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Pilne</span><span class="group-title">Stany nagłe w onkologii</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Gorączka neutropeniczna</div>
+          <div class="card-sub">bezpośrednie zagrożenie życia</div>
+          <ul class="hy">
+            <li>Definicja (ESMO): temp <span class="k">&gt;38,3°C</span> jednorazowo lub <span class="k">&gt;38°C</span> w 2 pomiarach (odstęp 2 h)</li>
+            <li>+ neutrofile <span class="k">&lt;500/mm³</span> (lub &lt;1000 spadające); agranulocytoza &lt;100/mm³</li>
+            <li><b>Natychmiast</b> empiryczna antybiotykoterapia szerokospektralna (piperacylina/tazobaktam, cefepim)</li>
+            <li>Nadir neutrofili w <span class="k">7.–14. dobie</span>; profilaktyka G-CSF przy ryzyku &gt;20%</li>
+          </ul>
+        </article>
+        <div class="subgrid">
+          <article class="card">
+            <div class="card-name">Hiperkalcemia</div><div class="card-sub">najczęstsze zab. metaboliczne</div>
+            <ul class="hy"><li>Objawy: odwodnienie, zaparcia, senność, splątanie, wielomocz</li><li>Leczenie: <span class="k">nawodnienie i.v.</span> → <span class="k">bisfosfoniany</span> / denosumab; kalcytonina</li></ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Zespół lizy guza (TLS)</div><div class="card-sub">duża masa guza, białaczki</div>
+            <ul class="hy"><li>↑ potas, ↑ fosforany, ↑ kwas moczowy, <b>↓ wapń</b></li><li>Profilaktyka: nawodnienie + <span class="k">allopurynol</span> / <span class="k">rasburykaza</span></li></ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Zespół żyły głównej górnej</div><div class="card-sub">SVC</div>
+            <ul class="hy"><li>Obrzęk twarzy/szyi, poszerzenie żył, duszność</li><li>Najczęściej: rak płuca, chłoniaki</li><li>RTH/CHTH, stent, glikokortykosteroidy</li></ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Ucisk rdzenia kręgowego</div><div class="card-sub">naglący neurologiczny</div>
+            <ul class="hy"><li>Ból pleców + narastające deficyty, zab. zwieraczy</li><li>Pilnie: <span class="k">MR kręgosłupa</span> + <span class="k">deksametazon</span> + RTH / dekompresja</li></ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Odległe</span><span class="group-title">Zespoły paranowotworowe</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Zespół → mechanizm → nowotwór</div>
+          <div class="card-sub">objawy niezwiązane z naciekaniem</div>
+          <table class="hy">
+            <tr><th>Zespół</th><th>Mechanizm</th><th>Najczęstszy nowotwór</th></tr>
+            <tr><td><span class="k">SIADH</span> (hiponatremia)</td><td>ektopowa wazopresyna (ADH)</td><td>Drobnokomórkowy rak płuca</td></tr>
+            <tr><td>Zespół <span class="k">Cushinga</span></td><td>ektopowe ACTH</td><td>SCLC, NET</td></tr>
+            <tr><td>Hiperkalcemia humoralna</td><td><span class="k">PTHrP</span></td><td>Rak płaskonabłonkowy, nerka</td></tr>
+            <tr><td>Zespół <span class="k">Lamberta-Eatona</span></td><td>przeciwciała p/kanałom Ca²⁺</td><td>Drobnokomórkowy rak płuca (40–50%)</td></tr>
+            <tr><td>Zwyrodnienie móżdżkowe</td><td>neurologiczny, autoimmun.</td><td>Pierś, jajnik, SCLC</td></tr>
+          </table>
+          <div class="callout"><span class="hl">Drobnokomórkowy rak płuca</span> to „król" zespołów paranowotworowych: SIADH, Cushing, Lamberta-Eatona.</div>
+        </article>
+      </section>
+    </section>
+
+    <!-- ============ PANEL: BÓL / WSPOMAGAJĄCE / GENETYKA ============ -->
+    <section class="panel" id="panel-bwg">
+      <div class="panel-title">Ból · leczenie wspomagające · genetyka</div>
+      <p class="intro">Objawowe i wspomagające leczenie onkologiczne oraz dziedziczne predyspozycje.</p>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Objawowe</span><span class="group-title">Leczenie bólu — drabina WHO</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Trójstopniowa drabina analgetyczna</div>
+          <div class="card-sub">Światowa Organizacja Zdrowia</div>
+          <table class="hy">
+            <tr><th>Stopień</th><th>Leki</th><th>Wskazanie</th></tr>
+            <tr><td><span class="k">I</span> — nieopioidowe</td><td>NLPZ, paracetamol, metamizol, nefopam, flupirtyna</td><td>ból łagodny</td></tr>
+            <tr><td><span class="k">II</span> — słabe opioidy</td><td>tramadol, kodeina, dihydrokodeina; + małe dawki silnych (morfina ≤30 mg/d)</td><td>ból umiarkowany</td></tr>
+            <tr><td><span class="k">III</span> — silne opioidy</td><td>morfina, oksykodon, fentanyl, buprenorfina, tapentadol, metadon, hydromorfon</td><td>ból silny</td></tr>
+          </table>
+          <div class="callout tip"><strong>Koanalgetyki na każdym stopniu</strong> (ból neuropatyczny): gabapentyna, pregabalina, karbamazepina, amitryptylina.</div>
+          <div class="callout"><strong>Ból przebijający:</strong> morfina o natychmiastowym uwalnianiu <span class="hl">10–15% (1/12–1/6)</span> dawki dobowej; fentanyl podpoliczkowy/donosowy.</div>
+        </article>
+      </section>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Wspomagające</span><span class="group-title">Leczenie wspomagające i toksyczności</span><span class="group-line"></span></div>
+        <div class="subgrid">
+          <article class="card">
+            <div class="card-name">Nudności i wymioty (CINV)</div><div class="card-sub">wg emetogenności</div>
+            <ul class="hy"><li>Setrony 5-HT3 (ondansetron)</li><li>Antagoniści <span class="k">NK1</span> (aprepitant)</li><li><span class="k">Deksametazon</span>, olanzapina</li></ul>
+          </article>
+          <article class="card">
+            <div class="card-name">Toksyczności — skojarz lek → narząd</div><div class="card-sub">częsty typ pytania</div>
+            <ul class="hy"><li><b>Kardio:</b> antracykliny, trastuzumab</li><li><b>Neuro:</b> platyny, taksany</li><li><b>Nefro:</b> cisplatyna</li><li><b>Wysypka:</b> anty-EGFR (cetuksymab)</li></ul>
+          </article>
+        </div>
+        <article class="card">
+          <div class="card-name">Wyniszczenie (kacheksja) i żywienie</div><div class="card-sub">leczenie wspomagające</div>
+          <ul class="hy"><li>Ocena stanu odżywienia; interwencja: doustna → dojelitowa → pozajelitowa</li><li>Prehabilitacja przed leczeniem; żywienie także w opiece paliatywnej</li></ul>
+        </article>
+      </section>
+
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Dziedziczne</span><span class="group-title">Genetyka i zespoły dziedziczne</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">Zespół → gen → nowotwory</div>
+          <div class="card-sub">predyspozycje dziedziczne</div>
+          <table class="hy">
+            <tr><th>Zespół / gen</th><th>Nowotwory</th></tr>
+            <tr><td><span class="k">BRCA1 / BRCA2</span></td><td>Pierś, jajnik (także prostata, trzustka) → PARP</td></tr>
+            <tr><td>Zespół <span class="k">Lyncha</span> (HNPCC, MMR)</td><td>Jelito grube, endometrium; MSI</td></tr>
+            <tr><td><span class="k">FAP</span> (gen APC)</td><td>Polipowatość rodzinna → rak jelita grubego</td></tr>
+            <tr><td>Li-Fraumeni (<span class="k">TP53</span>)</td><td>Mięsaki, pierś, mózg, nadnercza</td></tr>
+            <tr><td>MEN</td><td>Nowotwory gruczołów dokrewnych</td></tr>
+          </table>
+          <div class="callout info">Wykrycie mutacji zmienia postępowanie: intensywniejszy skrining, chirurgia profilaktyczna, dobór terapii (PARP przy BRCA).</div>
+        </article>
+      </section>
+    </section>
+
+    <!-- ============ PANEL: SZYBKA POWTÓRKA ============ -->
+    <section class="panel" id="panel-szybka">
+      <div class="panel-title">Szybka powtórka</div>
+      <p class="intro">Skróty myślowe na ostatnią chwilę przed egzaminem.</p>
+      <section class="group">
+        <div class="group-head"><span class="group-kicker">Skojarzenia</span><span class="group-title">Szybka powtórka</span><span class="group-line"></span></div>
+        <article class="card">
+          <div class="card-name">„Jeśli w pytaniu…" → odpowiedź</div>
+          <div class="card-sub">klasyczne skróty</div>
+          <ul class="hy">
+            <li>HPV → <b>rak szyjki macicy</b> · Azbest → <b>międzybłoniak</b></li>
+            <li>Reed-Sternberg → <b>chłoniak Hodgkina</b> · CRAB → <b>szpiczak</b></li>
+            <li>PTHrP/hiperkalcemia → <b>rak płaskonabłonkowy</b></li>
+            <li>SIADH / Lamberta-Eaton → <b>drobnokomórkowy rak płuca</b></li>
+            <li>ABCDE → <b>czerniak</b> · BRCA → <b>pierś/jajnik → PARP</b></li>
+          </ul>
+        </article>
+        <div class="subgrid">
+          <article class="card">
+            <div class="card-name">Marker → nowotwór</div><div class="card-sub">błyskawiczne</div>
+            <p><span class="pill o">PSA → prostata</span><span class="pill o">CA 125 → jajnik</span><span class="pill o">CA 19-9 → trzustka</span><span class="pill o">CEA → jelito grube</span><span class="pill o">AFP → wątroba/jądro</span><span class="pill o">β-hCG → jądro</span></p>
+          </article>
+          <article class="card">
+            <div class="card-name">Mutacja → lek</div><div class="card-sub">błyskawiczne</div>
+            <p><span class="pill p">EGFR → ozymertynib</span><span class="pill p">ALK → kryzotynib</span><span class="pill p">BRAF → wemurafenib</span><span class="pill p">HER2 → trastuzumab</span><span class="pill p">RAS wt → cetuksymab</span><span class="pill p">BRCA → olaparyb</span></p>
+          </article>
+          <article class="card">
+            <div class="card-name">Hormonozależne → hormonoterapia</div><div class="card-sub">błyskawiczne</div>
+            <p><span class="pill">Pierś ER+ → tamoksyfen / IA</span><span class="pill">Prostata → ADT (GnRH)</span><span class="pill">Endometrium → progestageny</span><span class="pill">Tarczyca → supresja TSH</span></p>
+          </article>
+          <article class="card">
+            <div class="card-name">Stany nagłe — progi</div><div class="card-sub">liczby do zapamiętania</div>
+            <ul class="hy"><li>Gorączka neutropeniczna: T &gt;38,3°C i neutrofile &lt;500</li><li>Agranulocytoza: &lt;100 · Nadir: 7.–14. doba</li><li>TLS: ↑K, ↑PO₄, ↑kwas moczowy, ↓Ca</li></ul>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <div class="noresult" id="noresult">Brak treści pasujących do wyszukiwania.</div>
+  </main>
 </div>
 
 <footer>
   <div class="wrap">
-    <p><strong>Uwaga:</strong> materiał edukacyjny, ujęcie uproszczone. Rzeczywiste decyzje terapeutyczne zależą od stopnia zaawansowania, podtypu molekularnego, stanu sprawności i aktualnych wytycznych. Nie zastępuje konsultacji ani podręcznika. Role: <strong style="color:#2c7a45">podstawa</strong> · <strong style="color:#a56d1a">selektywnie</strong> · <strong style="color:var(--ink-3)">rzadko/nie</strong>.</p>
+    <p><strong>Role w atlasie:</strong> <strong style="color:#2c7a45">podstawa</strong> · <strong style="color:#a56d1a">selektywnie</strong> · <strong style="color:var(--ink-3)">rzadko/nie</strong>. Metody miejscowe: chirurgia, radioterapia. Metody systemowe: chemioterapia, hormonoterapia, immuno/celowane.</p>
+    <p><strong>Źródła:</strong> Onkologia — podręcznik dla studentów medycyny, red. Stec, Smoter, Deptała, Mackiewicz, wyd. 3 (AsteriaMed, 2023); materiały z prezentacji (Klinika Onkologii WUM); analiza bazy 1178 pytań egzaminacyjnych (2017–2025).</p>
+    <p><strong>Uwaga:</strong> materiał edukacyjny i uproszczony. Rzeczywiste decyzje zależą od stopnia zaawansowania, podtypu molekularnego, stanu sprawności i aktualnych wytycznych. Nie zastępuje podręcznika ani konsultacji lekarskiej.</p>
   </div>
 </footer>
 
@@ -236,259 +715,274 @@ const DATA=[
  {group:"Układ oddechowy",cancers:[
   {name:"Rak płuca — NDRP",sub:"niedrobnokomórkowy · ~85%",m:{
     surgery:["core","Podstawa w st. I–II (lobektomia/pneumonektomia z limfadenektomią)."],
-    chemo:["core","Uzupełniająca po operacji (II–III), paliatywna w chorobie rozsianej."],
     radio:["core","SBRT w I–II przy dyskwalifikacji od operacji; radykalna/paliatywna w III–IV."],
+    chemo:["core","Uzupełniająca po operacji (II–III), paliatywna w chorobie rozsianej."],
+    hormo:["no","Nie dotyczy."],
     immuno:["core","Anty-PD-1/PD-L1 (niwolumab, pembrolizumab); inhibitory EGFR/ALK przy mutacji."]}},
   {name:"Rak płuca — DRP",sub:"drobnokomórkowy · ~15%",m:{
     surgery:["no","Rzadko — tylko bardzo wczesne, ograniczone przypadki."],
+    radio:["core","Na klatkę (postać ograniczona LD) + profilaktyczne napromienianie mózgu (PCI)."],
     chemo:["core","Podstawa leczenia zawsze."],
-    radio:["core","Na klatkę piersiową (postać ograniczona LD) + profilaktyczne napromienianie mózgu (PCI)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","W chorobie rozległej (ED) w skojarzeniu z chemioterapią."]}},
   {name:"Międzybłoniak opłucnej",sub:"związek z azbestem",m:{
     surgery:["sel","Pneumonektomia zewnątrzopłucnowa lub pleurektomia w I–III bez cechy N2."],
-    chemo:["core","Podstawa w chorobie zaawansowanej (pemetreksed + cisplatyna)."],
     radio:["sel","Uzupełniająco / paliatywnie."],
+    chemo:["core","Podstawa w chorobie zaawansowanej (pemetreksed + cisplatyna)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","Niwolumab + ipilimumab w wybranych przypadkach."]}},
  ]},
  {group:"Pierś i narząd rodny",cancers:[
   {name:"Rak piersi",sub:"najczęstszy nowotwór kobiet",m:{
     surgery:["core","BCT (oszczędzająca) lub amputacja + węzeł wartowniczy/limfadenektomia."],
-    chemo:["core","Zależnie od podtypu — zawsze w HER2+ i potrójnie ujemnym, selektywnie w luminalnym."],
     radio:["core","Obligatoryjna po BCT; po amputacji przy czynnikach ryzyka."],
-    immuno:["sel","Hormonoterapia przy ER+/PgR+; anty-HER2 (trastuzumab, pertuzumab); pembrolizumab w potrójnie ujemnym."]}},
+    chemo:["core","Wg podtypu — zawsze w HER2+ i potrójnie ujemnym, selektywnie w luminalnym."],
+    hormo:["core","Podstawa w typie hormonozależnym (ER+/PgR+): tamoksyfen (przed i po menopauzie), inhibitory aromatazy (po menopauzie), fulwestrant; + CDK4/6; ablacja jajników."],
+    immuno:["sel","Anty-HER2 (trastuzumab, pertuzumab) w HER2+; pembrolizumab i PARP (BRCA) w potrójnie ujemnym."]}},
   {name:"Rak szyjki macicy",sub:"związek z HPV",m:{
     surgery:["core","Wczesne stadia — konizacja, radykalne wycięcie macicy."],
-    chemo:["core","Cisplatyna jednoczasowo z radioterapią."],
     radio:["core","Podstawa poza wczesnymi postaciami; zawsze z brachyterapią."],
+    chemo:["core","Cisplatyna jednoczasowo z radioterapią."],
+    hormo:["no","Nie dotyczy."],
     immuno:["no","Nie jest standardem I rzutu (rozważane w zaawansowanych)."]}},
   {name:"Rak trzonu macicy",sub:"endometrium · najlepiej rokujący z narządu rodnego",m:{
     surgery:["core","Podstawa — histerektomia z przydatkami."],
-    chemo:["sel","W typie II lub chorobie zaawansowanej."],
     radio:["sel","Brachyterapia dopochwowa, teleradioterapia przy podwyższonym ryzyku."],
-    immuno:["no","W wybranych zaawansowanych przypadkach."]}},
+    chemo:["sel","W typie II lub chorobie zaawansowanej."],
+    hormo:["sel","Progestageny (np. octan megestrolu) — w wybranych (typ I, leczenie zachowujące płodność lub paliatywne)."],
+    immuno:["sel","Pembrolizumab (± lenwatynib); dostarlimab przy dMMR/MSI-H."]}},
   {name:"Rak jajnika",sub:"często rozpoznawany późno",m:{
     surgery:["core","Cytoredukcja — podstawa leczenia."],
-    chemo:["core","Pochodne platyny + paklitaksel, standard po operacji."],
     radio:["no","Rzadko stosowana."],
+    chemo:["core","Pochodne platyny + paklitaksel, standard po operacji."],
+    hormo:["no","Rzadko — wybrane guzy low-grade surowicze."],
     immuno:["sel","Bewacyzumab; olaparyb przy mutacji BRCA / deficycie HRD."]}},
   {name:"Rak sromu",sub:"90% płaskonabłonkowy",m:{
     surgery:["core","Podstawa — wycięcie z oceną węzłów pachwinowych."],
-    chemo:["sel","W skojarzeniu z radioterapią w zaawansowanych (III–IVA)."],
     radio:["sel","Neoadiuwantowo/uzupełniająco przy wysokim ryzyku."],
+    chemo:["sel","W skojarzeniu z radioterapią w zaawansowanych (III–IVA)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["no","Nie jest standardem."]}},
  ]},
  {group:"Górny odcinek przewodu pokarmowego",cancers:[
   {name:"Rak przełyku",sub:"płaskonabłonkowy / gruczołowy",m:{
     surgery:["core","Ezofagektomia w chorobie resekcyjnej."],
-    chemo:["core","Okołooperacyjna; paliatywna w zaawansowanej."],
     radio:["core","Chemioradioterapia — często definitywna lub przedoperacyjna."],
+    chemo:["core","Okołooperacyjna; paliatywna w zaawansowanej."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","Anty-PD-1 w wybranych; anty-HER2 przy gruczolakoraku HER2+."]}},
   {name:"Rak żołądka",sub:"gruczolakorak (klasyfikacja Laurena)",m:{
     surgery:["core","Gastrektomia z limfadenektomią D2."],
-    chemo:["core","Okołooperacyjna (FLOT, ECF)."],
     radio:["sel","Chemioradioterapia uzupełniająca w wybranych przypadkach."],
+    chemo:["core","Okołooperacyjna (FLOT, ECF)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","Trastuzumab przy HER2+; niwolumab w wybranych zaawansowanych."]}},
   {name:"Rak trzustki",sub:"gruczolakorak przewodowy · złe rokowanie",m:{
     surgery:["core","Jedyna metoda potencjalnie wyleczająca (operacja Whipple'a)."],
-    chemo:["core","Adiuwantowa (złoty standard) i paliatywna (FOLFIRINOX, gemcytabina)."],
     radio:["sel","W guzach granicznie resekcyjnych, w skojarzeniu z chemioterapią."],
+    chemo:["core","Adiuwantowa (złoty standard) i paliatywna (FOLFIRINOX, gemcytabina)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["no","Nie jest standardem."]}},
  ]},
  {group:"Wątroba i drogi żółciowe",cancers:[
   {name:"Rak wątrobowokomórkowy (HCC)",sub:"na podłożu marskości / WZW",m:{
     surgery:["core","Resekcja lub przeszczep wątroby (najlepsze rokowanie)."],
-    chemo:["no","Klasyczna chemioterapia NIEREKOMENDOWANA — mała skuteczność."],
     radio:["sel","Radioembolizacja (TARE/SIRT); rzadziej teleradioterapia."],
-    immuno:["core","Atezolizumab + bewacyzumab, sorafenib, lenwatynib. Leczenie miejscowe: RFA, TACE."]}},
+    chemo:["no","Klasyczna chemioterapia NIEREKOMENDOWANA — mała skuteczność."],
+    hormo:["no","Nie dotyczy."],
+    immuno:["core","Atezolizumab + bewacyzumab, sorafenib, lenwatynib. Miejscowo: RFA, TACE."]}},
   {name:"Rak dróg żółciowych / pęcherzyka",sub:"nowotwór rzadki",m:{
     surgery:["core","Resekcja radykalna — jedyna szansa wyleczenia."],
-    chemo:["core","Pooperacyjnie kapecytabina; paliatywnie gemcytabina + cisplatyna."],
     radio:["sel","W wybranych przypadkach."],
+    chemo:["core","Pooperacyjnie kapecytabina; paliatywnie gemcytabina + cisplatyna."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","W wybranych, wg profilu molekularnego."]}},
  ]},
  {group:"Dolny odcinek przewodu pokarmowego",cancers:[
   {name:"Rak jelita grubego",sub:"okrężnica / odbytnica",m:{
     surgery:["core","Podstawa we wszystkich resekcyjnych stadiach (min. 12 węzłów)."],
-    chemo:["core","Uzupełniająca w st. III (i wybranych II); paliatywna FOLFOX/FOLFIRI w st. IV."],
     radio:["sel","Głównie w raku odbytnicy (przed- i pooperacyjna)."],
+    chemo:["core","Uzupełniająca w st. III (i wybranych II); paliatywna FOLFOX/FOLFIRI w st. IV."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","Anty-EGFR (cetuksymab) przy RAS/BRAF wild-type; anty-VEGF; pembrolizumab przy MSI-H."]}},
   {name:"Rak kanału odbytu",sub:"płaskonabłonkowy · związek z HPV",m:{
     surgery:["sel","Rezerwowana — doszczętne wycięcie w raku brzegu odbytu."],
-    chemo:["core","5-FU + mitomycyna, jednoczasowo z radioterapią."],
     radio:["core","Chemioradioterapia to leczenie z wyboru (oszczędza zwieracze)."],
+    chemo:["core","5-FU + mitomycyna, jednoczasowo z radioterapią."],
+    hormo:["no","Nie dotyczy."],
     immuno:["no","Nie jest standardem."]}},
  ]},
  {group:"Układ moczowo-płciowy",cancers:[
   {name:"Rak gruczołu krokowego",sub:"prostata",m:{
     surgery:["core","Prostatektomia radykalna (niskie/pośrednie ryzyko)."],
-    chemo:["sel","Głównie w stadium opornym na kastrację."],
     radio:["core","Alternatywa dla chirurgii; brachyterapia; teleradioterapia."],
-    immuno:["core","Hormonoterapia (ADT) — podstawa w pośrednim/wysokim ryzyku i chorobie rozsianej."]}},
+    chemo:["sel","Głównie w stadium opornym na kastrację (docetaksel)."],
+    hormo:["core","Podstawa (ADT): analogi GnRH (efekt flare → osłona antyandrogenem), degareliks, antyandrogeny (bikalutamid), abirateron/enzalutamid; cel: testosteron < 50 ng/dl."],
+    immuno:["sel","Inhibitory PARP (olaparyb) przy mutacji BRCA/HRR; radioligand ¹⁷⁷Lu-PSMA w CRPC."]}},
   {name:"Rak nerki",sub:"jasnokomórkowy (ccRCC) ~80%",m:{
     surgery:["core","Nefrektomia — podstawa leczenia miejscowego."],
-    chemo:["no","Nieskuteczna, nie stosowana."],
     radio:["sel","Głównie paliatywnie (przerzuty do kości, mózgu)."],
-    immuno:["core","TKI (sunitynib, sorafenib, kabozantynib); niwolumab + ipilimumab."]}},
+    chemo:["no","Nieskuteczna, nie stosowana."],
+    hormo:["no","Nie dotyczy."],
+    immuno:["core","TKI (sunitynib, kabozantynib); niwolumab + ipilimumab."]}},
   {name:"Rak pęcherza moczowego",sub:"urotelialny",m:{
     surgery:["core","TURBT (powierzchowne); cystektomia (naciekające)."],
-    chemo:["core","Dopęcherzowa (powierzchowne) lub systemowa (gemcytabina + cisplatyna, M-VAC)."],
     radio:["sel","Alternatywa dla cystektomii w wybranych przypadkach."],
+    chemo:["core","Dopęcherzowa (powierzchowne) lub systemowa (gemcytabina + cisplatyna, M-VAC)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["core","BCG dopęcherzowo (powierzchowne); anty-PD-1/PD-L1 w zaawansowanej."]}},
   {name:"Nowotwory jądra",sub:"nasieniaki / nienasieniaki · dobre rokowanie",m:{
     surgery:["core","Orchidektomia — podstawa; limfadenektomia zaotrzewnowa w wybranych."],
-    chemo:["core","BEP/EP — bardzo chemiowrażliwe, wysoka wyleczalność."],
     radio:["sel","Głównie w nasieniakach (wybrane stadia)."],
+    chemo:["core","BEP/EP — bardzo chemiowrażliwe, wysoka wyleczalność."],
+    hormo:["no","Nie dotyczy."],
     immuno:["no","Nie jest standardem."]}},
   {name:"Rak prącia",sub:"rzadki · głównie płaskonabłonkowy",m:{
     surgery:["core","Wycięcie miejscowe / amputacja + węzły pachwinowe."],
-    chemo:["sel","Neoadiuwantowa (T4) i paliatywna, oparta na cisplatynie."],
     radio:["sel","Brachyterapia małych zmian; z pól zewnętrznych; uzupełniająco przy N+."],
+    chemo:["sel","Neoadiuwantowa (T4) i paliatywna, oparta na cisplatynie."],
+    hormo:["no","Nie dotyczy."],
     immuno:["no","Nie jest standardem."]}},
  ]},
  {group:"Skóra i tkanki miękkie",cancers:[
   {name:"Czerniak",sub:"nowotwór melanocytów",m:{
     surgery:["core","Wycięcie z marginesem + biopsja węzła wartowniczego — podstawa."],
-    chemo:["no","Historycznie stosowana, dziś zastąpiona nowszymi terapiami."],
     radio:["sel","Rzadko, głównie paliatywnie."],
+    chemo:["no","Historycznie stosowana, dziś zastąpiona nowszymi terapiami."],
+    hormo:["no","Nie dotyczy."],
     immuno:["core","Niwolumab, pembrolizumab, ipilimumab; inhibitory BRAF/MEK przy mutacji BRAF V600."]}},
   {name:"Rak skóry (podstawno-/kolczystokomórkowy)",sub:"związek z UV",m:{
     surgery:["core","Podstawa leczenia — wycięcie miejscowe."],
-    chemo:["no","Rzadko, tylko zaawansowane przypadki."],
     radio:["sel","Definitywna, gdy chirurgia da zły efekt funkcjonalny/kosmetyczny."],
+    chemo:["no","Rzadko, tylko zaawansowane przypadki."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","W zaawansowanym raku kolczystokomórkowym (anty-PD-1)."]}},
   {name:"Mięsaki tkanek miękkich",sub:"pochodzenie mezenchymalne",m:{
     surgery:["core","Podstawa — szerokie wycięcie z zachowaniem kończyny."],
-    chemo:["sel","W niektórych podtypach (zwł. drobnokomórkowe u dzieci/młodych)."],
     radio:["core","Przed- lub pooperacyjnie dla zachowania kończyny."],
+    chemo:["sel","W niektórych podtypach (zwł. drobnokomórkowe u dzieci/młodych)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["no","Rzadko, w wybranych podtypach."]}},
  ]},
  {group:"Głowa i szyja oraz gruczoły dokrewne",cancers:[
   {name:"Nowotwory głowy i szyi",sub:"90% płaskonabłonkowe",m:{
     surgery:["core","Podstawa we wczesnych stadiach (jama ustna, gardło, krtań)."],
-    chemo:["core","Chemioradioterapia z cisplatyną w miejscowo zaawansowanych."],
     radio:["core","Ogromna rola — samodzielna (wczesny rak krtani), definitywna, brachyterapia."],
+    chemo:["core","Chemioradioterapia z cisplatyną w miejscowo zaawansowanych."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","Anty-PD-1 w nawrotowych/przerzutowych."]}},
   {name:"Rak tarczycy (zróżnicowany)",sub:"brodawkowaty / pęcherzykowy",m:{
     surgery:["core","Tyreoidektomia — podstawa leczenia."],
-    chemo:["no","Nieskuteczna, nie stosowana."],
     radio:["core","Leczenie radiojodem (¹³¹I) — tylko raki zróżnicowane, jodochwytne."],
+    chemo:["no","Nieskuteczna, nie stosowana."],
+    hormo:["core","Supresja TSH lewotyroksyną — rutynowe leczenie uzupełniające po operacji/radiojodzie."],
     immuno:["sel","Inhibitory kinaz w raku opornym/zaawansowanym."]}},
   {name:"Rak kory nadnerczy (ACC)",sub:"rzadki · agresywny",m:{
     surgery:["core","Radykalne wycięcie — podstawa, jedyna szansa wyleczenia."],
-    chemo:["sel","Słaba wrażliwość — EDP-M w chorobie zaawansowanej."],
     radio:["sel","Uzupełniająco w wybranych przypadkach."],
-    immuno:["core","Mitotan (adrenolityczny) — leczenie uzupełniające u chorych wysokiego ryzyka."]}},
+    chemo:["sel","Słaba wrażliwość — EDP-M w chorobie zaawansowanej."],
+    hormo:["no","Nie dotyczy (mitotan = adrenolityk; blokery steroidogenezy kontrolują nadmiar hormonów)."],
+    immuno:["sel","Mitotan (adrenolityczny) — leczenie uzupełniające u chorych wysokiego ryzyka."]}},
  ]},
  {group:"Nowotwory hematologiczne",cancers:[
   {name:"Chłoniak Hodgkina",sub:"dwa szczyty zachorowań (25–30 i >55 lat)",m:{
     surgery:["no","Nie stosowana (jedynie biopsja diagnostyczna)."],
-    chemo:["core","Podstawa leczenia (ABVD, BEACOPP)."],
     radio:["sel","Uzupełniająco na zmiany resztkowe / masywne (bulky)."],
+    chemo:["core","Podstawa leczenia (ABVD, BEACOPP)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["sel","Brentuksymab vedotin (anty-CD30) w skojarzeniu z chemioterapią."]}},
   {name:"Chłoniaki nieziarnicze (NHL)",sub:"gł. z komórek B (DLBCL)",m:{
     surgery:["no","Nie stosowana (biopsja diagnostyczna)."],
-    chemo:["core","Podstawa — immunochemioterapia (np. R-CHOP)."],
     radio:["sel","W chłoniakach pozawęzłowych bywa metodą z wyboru; na zmiany resztkowe."],
+    chemo:["core","Podstawa — immunochemioterapia (np. R-CHOP)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["core","Rytuksymab (anty-CD20); CAR-T w opornych przypadkach."]}},
   {name:"Szpiczak plazmocytowy",sub:"zespół CRAB · zmiany osteolityczne",m:{
     surgery:["no","Nie stosowana."],
-    chemo:["core","Podstawa (bortezomib, lenalidomid i inne leki celowane)."],
     radio:["sel","Paliatywnie na bolesne zmiany kostne."],
+    chemo:["core","Podstawa (bortezomib, lenalidomid i inne leki celowane)."],
+    hormo:["no","Nie dotyczy."],
     immuno:["core","Przeszczep autologiczny komórek macierzystych w wybranych przypadkach."]}},
  ]},
 ];
 
-const LABELS={surgery:"Chirurgia",chemo:"Chemioterapia",radio:"Radioterapia",immuno:"Immuno / celowane"};
+const LABELS={surgery:"Chirurgia",radio:"Radioterapia",chemo:"Chemioterapia",hormo:"Hormonoterapia",immuno:"Immuno / celowane"};
+const ORDER=['surgery','radio','chemo','hormo','immuno'];
 const ROLE_TXT={core:"podstawa",sel:"selektywnie",no:"rzadko/nie"};
 const ICON={
   surgery:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5 19 9l-9.5 9.5L5 14z"/><path d="m5 14-2 5 5-2"/></svg>',
-  chemo:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-4 8a2 2 0 0 0 2 3h8a2 2 0 0 0 2-3l-4-8V3"/><path d="M7 15h10"/></svg>',
   radio:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>',
+  chemo:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-4 8a2 2 0 0 0 2 3h8a2 2 0 0 0 2-3l-4-8V3"/><path d="M7 15h10"/></svg>',
+  hormo:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s5.5 6.2 5.5 10.5a5.5 5.5 0 0 1-11 0C6.5 8.2 12 2 12 2z"/></svg>',
   immuno:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.7 8.9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1 1 0 0 1 1.5 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/></svg>'
 };
 
 const atlas=document.getElementById('atlas');
-const tocList=document.getElementById('tocList');
 let idCounter=0;
-const allLinks=[];
-
 DATA.forEach((grp,gi)=>{
-  // sekcja treści
   const sec=document.createElement('section');
   sec.className='group';
   sec.innerHTML=`<div class="group-head"><span class="group-num">${String(gi+1).padStart(2,'0')}</span><span class="group-title">${grp.group}</span><span class="group-line"></span></div>`;
-
-  // grupa w spisie treści
-  const tg=document.createElement('div');
-  tg.className='toc-group';
-  tg.innerHTML=`<div class="toc-group-title">${grp.group}</div>`;
-
   grp.cancers.forEach(c=>{
-    const id='c'+(idCounter++);
-    // karta
     const card=document.createElement('article');
-    card.className='card';card.id=id;
-    card.dataset.search=(c.name+' '+c.sub).toLowerCase();
+    card.className='card';card.id='c'+(idCounter++);
     let mh='';
-    ['surgery','chemo','radio','immuno'].forEach(k=>{
+    ORDER.forEach(k=>{
       const [role,desc]=c.m[k];
       mh+=`<div class="method"><div class="method-icon ${k}">${ICON[k]}</div><div class="method-body"><div class="method-top"><span class="method-name ${k}">${LABELS[k]}</span><span class="role ${role}">${ROLE_TXT[role]}</span></div><div class="method-desc">${desc}</div></div></div>`;
     });
     card.innerHTML=`<div class="card-name">${c.name}</div><div class="card-sub">${c.sub}</div><div class="methods">${mh}</div>`;
     sec.appendChild(card);
-
-    // link w spisie treści
-    const a=document.createElement('a');
-    a.className='toc-link';a.href='#'+id;a.textContent=c.name;
-    a.dataset.target=id;a.dataset.search=(c.name+' '+c.sub).toLowerCase();
-    a.addEventListener('click',e=>{
-      e.preventDefault();
-      const el=document.getElementById(id);
-      el.scrollIntoView({behavior:'smooth',block:'start'});
-      el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
-    });
-    tg.appendChild(a);
-    allLinks.push({a,card,group:tg});
   });
   atlas.appendChild(sec);
-  tocList.appendChild(tg);
 });
 
-/* aktywny link wg pozycji scrolla */
-const cards=[...document.querySelectorAll('.card')];
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(en=>{
-    if(en.isIntersecting){
-      const id=en.target.id;
-      allLinks.forEach(l=>l.a.classList.toggle('active',l.a.dataset.target===id));
-    }
-  });
-},{rootMargin:'-20% 0px -70% 0px',threshold:0});
-cards.forEach(c=>io.observe(c));
+/* data-search dla wszystkich kart */
+document.querySelectorAll('.card').forEach(c=>{ c.dataset.search=c.textContent.toLowerCase(); });
 
-/* filtrowanie spisu treści + kart */
-const tocSearch=document.getElementById('tocSearch');
+/* ---------- ZAKŁADKI ---------- */
+const search=document.getElementById('search');
 const noresult=document.getElementById('noresult');
-tocSearch.addEventListener('input',()=>{
-  const q=tocSearch.value.trim().toLowerCase();
+const principle=document.querySelector('.principle');
+
+function setTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{ if(search.value){search.value='';applySearch();} setTab(t.dataset.tab); });
+});
+
+/* ---------- WYSZUKIWARKA (wszystkie zakładki) ---------- */
+function applySearch(){
+  const q=search.value.trim().toLowerCase();
+  document.body.classList.toggle('searching',!!q);
+  if(!q){
+    document.querySelectorAll('.card').forEach(c=>c.style.display='');
+    document.querySelectorAll('.group').forEach(g=>g.style.display='');
+    document.querySelectorAll('.panel').forEach(p=>p.style.display='');
+    if(principle) principle.style.display='';
+    noresult.classList.remove('show');
+    return;
+  }
   let any=false;
-  allLinks.forEach(l=>{
-    const match=!q||l.a.dataset.search.includes(q);
-    l.a.classList.toggle('hidden',!match);
-    l.card.style.display=match?'':'none';
-    if(match)any=true;
+  document.querySelectorAll('.card').forEach(c=>{
+    const m=c.dataset.search.includes(q);
+    c.style.display=m?'':'none'; if(m)any=true;
   });
-  // ukryj puste grupy w spisie treści i puste sekcje treści
-  document.querySelectorAll('.toc-group').forEach(g=>{
-    const vis=[...g.querySelectorAll('.toc-link')].some(a=>!a.classList.contains('hidden'));
+  document.querySelectorAll('.group').forEach(g=>{
+    const vis=[...g.querySelectorAll('.card')].some(c=>c.style.display!=='none');
     g.style.display=vis?'':'none';
   });
-  document.querySelectorAll('.content .group').forEach(sec=>{
-    const vis=[...sec.querySelectorAll('.card')].some(c=>c.style.display!=='none');
-    sec.style.display=vis?'':'none';
+  document.querySelectorAll('.panel').forEach(p=>{
+    const vis=[...p.querySelectorAll('.card')].some(c=>c.style.display!=='none');
+    p.style.display=vis?'block':'none';
   });
+  if(principle) principle.style.display='none';
   noresult.classList.toggle('show',!any);
-});
+}
+search.addEventListener('input',applySearch);
 </script>
 </body>
 </html>
