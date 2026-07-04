@@ -143,21 +143,6 @@
   .role.no{background:#eee9e0;color:var(--ink-3)}
   .method-desc{font-size:13px;color:var(--ink-2);line-height:1.5}
 
-  /* ---------- SEKWENCJA / RZUTY (element najważniejszy) ---------- */
-  .seq{background:var(--chemo-bg);border:1px solid #e2d8f3;border-left:4px solid var(--chemo);border-radius:12px;padding:16px 20px;margin:2px 0 22px}
-  .seq-label{display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--chemo);font-weight:700;margin-bottom:13px}
-  .seq-label::before{content:"→";font-size:16px;line-height:1}
-  .seq-list{list-style:none;counter-reset:s}
-  .seq-list li{position:relative;padding-left:34px;font-size:13.5px;color:var(--ink-2);margin:9px 0;line-height:1.5}
-  .seq-list li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:0;width:23px;height:23px;border-radius:50%;background:var(--chemo);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
-  .seq-list li b{color:var(--ink)}
-  .methods-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:4px 0 12px}
-  .notused{margin-top:14px;font-size:12.5px;color:var(--ink-3);background:var(--paper-2);border-radius:8px;padding:9px 13px}
-  .notused b{color:#a13d3d}
-  .notused .none{color:var(--surgery);font-weight:600}
-  .how-to{border-left:3px solid var(--chemo)}
-  .how-to .card-name{color:var(--chemo)}
-
   /* ---------- HIGH-YIELD ELEMENTS ---------- */
   table.hy{width:100%;border-collapse:collapse;font-size:13.5px}
   table.hy th{
@@ -279,31 +264,7 @@
     <!-- ============ PANEL: ATLAS ============ -->
     <section class="panel active" id="panel-atlas">
       <div class="panel-title">Atlas terapii</div>
-      <p class="intro">Dla każdego nowotworu: rola pięciu metod leczenia — <b>podstawa</b>, <b>selektywnie</b> lub <b>rzadko/nie</b> — oraz <b>kolejność (rzuty) leczenia</b> i wyraźnie wskazane, <b>czego się nie stosuje</b>.</p>
-
-      <article class="card how-to">
-        <div class="card-name">Jak czytać kolejność (rzuty) leczenia</div>
-        <div class="card-sub">słownik pojęć pod kartami</div>
-        <div class="subgrid">
-          <div>
-            <h5>Intencja leczenia</h5>
-            <ul class="hy">
-              <li><span class="k">Radykalne</span> — cel: wyleczenie (chirurgia, radioterapia radykalna, radiochemioterapia)</li>
-              <li><span class="k">Paliatywne</span> — cel: kontrola choroby i objawów, wydłużenie życia</li>
-            </ul>
-          </div>
-          <div>
-            <h5>Względem operacji</h5>
-            <ul class="hy">
-              <li><span class="k">Neoadiuwantowe</span> — przed operacją (zmniejsza guz)</li>
-              <li><span class="k">Adiuwantowe</span> — po operacji (niszczy mikroprzerzuty)</li>
-            </ul>
-          </div>
-        </div>
-        <div class="callout info"><strong>Linie (rzuty) leczenia systemowego:</strong> <span class="k">I linia</span> = pierwszy schemat w chorobie zaawansowanej/rozsianej. <span class="k">II linia</span> i kolejne = po niepowodzeniu lub nawrocie. Sekwencja pod każdą kartą pokazuje typową kolejność.</div>
-        <div class="notused"><b>„Nie stosuje się":</b> metody nieskuteczne lub niewskazane w danym nowotworze — celowo wypisane, by uniknąć pomyłek na egzaminie.</div>
-      </article>
-
+      <p class="intro">Dla każdego nowotworu: rola pięciu metod leczenia — <b>podstawa</b>, <b>selektywnie</b> lub <b>rzadko/nie</b>. Metody miejscowe (chirurgia, radioterapia) kontra systemowe (chemioterapia, hormonoterapia, immuno/celowane).</p>
       <div id="atlas"></div>
       <div class="principle">
         <h3>Zasada, która porządkuje wszystko</h3>
@@ -956,113 +917,6 @@ const ICON={
   immuno:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.7 8.9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1 1 0 0 1 1.5 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/></svg>'
 };
 
-/* Sekwencja / rzuty leczenia (klucz = nazwa nowotworu) */
-const SEQ={
- "Rak płuca — NDRP":[
-   "<b>Wczesny (I–II):</b> resekcja chirurgiczna → adiuwantowa chemioterapia (st. II–III); ozymertynib adiuwantowo przy mutacji EGFR",
-   "<b>Miejscowo zaawansowany (III):</b> radiochemioterapia → konsolidacja durwalumabem",
-   "<b>Rozsiany (IV) — I linia:</b> wg biomarkera: EGFR/ALK/ROS1 → inhibitor (TKI); wysokie PD-L1 → immunoterapia; inaczej chemioterapia + immunoterapia",
-   "<b>Kolejne linie:</b> docetaksel; zmiana TKI wg mechanizmu oporności"],
- "Rak płuca — DRP":[
-   "<b>Postać ograniczona:</b> chemioterapia (cisplatyna + etopozyd) + radioterapia klatki → profilaktyczne napromienianie mózgu (PCI)",
-   "<b>Postać rozległa — I linia:</b> chemioterapia + immunoterapia (atezolizumab/durwalumab)",
-   "<b>Nawrót — II linia:</b> topotekan"],
- "Międzybłoniak opłucnej":[
-   "<b>Wczesny resekcyjny:</b> chirurgia w ramach leczenia skojarzonego",
-   "<b>Zaawansowany — I linia:</b> chemioterapia (pemetreksed + cisplatyna) lub niwolumab + ipilimumab"],
- "Rak piersi":[
-   "<b>Wczesny:</b> (neoadiuwant w HER2+/TNBC) → chirurgia BCT+RTH lub mastektomia + węzeł wartowniczy → leczenie uzupełniające wg podtypu",
-   "<b>Rozsiany — I linia (wg podtypu):</b> HR+ → hormonoterapia + CDK4/6; HER2+ → anty-HER2 + chemioterapia; TNBC → chemioterapia ± immuno/PARP",
-   "<b>Kolejne linie:</b> fulwestrant, T-DM1 / trastuzumab derukstekan, inne schematy chemioterapii"],
- "Rak szyjki macicy":[
-   "<b>Wczesny:</b> chirurgia (konizacja / radykalne wycięcie macicy)",
-   "<b>Zaawansowany:</b> radiochemioterapia (cisplatyna) + brachyterapia",
-   "<b>Rozsiany / nawrót:</b> chemioterapia ± bewacyzumab ± pembrolizumab"],
- "Rak trzonu macicy":[
-   "<b>Podstawa:</b> chirurgia (histerektomia z przydatkami) → adiuwant wg ryzyka (brachyterapia / RTH / chemioterapia)",
-   "<b>Zaawansowany / nawrót:</b> chemioterapia (karboplatyna + paklitaksel); progestageny w wybranych; pembrolizumab + lenwatynib"],
- "Rak jajnika":[
-   "<b>Podstawa:</b> cytoredukcja chirurgiczna + chemioterapia platynowa (karboplatyna + paklitaksel) ± bewacyzumab",
-   "<b>Podtrzymujące:</b> inhibitor PARP (olaparyb) przy mutacji BRCA/HRD",
-   "<b>Nawrót:</b> dobór linii wg wrażliwości na platynę (platynowrażliwy vs platynooporny)"],
- "Rak sromu":[
-   "<b>Podstawa:</b> chirurgia + ocena węzłów pachwinowych",
-   "<b>Zaawansowany:</b> radio(chemio)terapia"],
- "Rak przełyku":[
-   "<b>Resekcyjny:</b> chemio(radio)terapia przedoperacyjna → ezofagektomia",
-   "<b>Zaawansowany — I linia:</b> chemioterapia ± trastuzumab (HER2+) ± immunoterapia; radiochemioterapia definitywna (typ płaskonabłonkowy)"],
- "Rak żołądka":[
-   "<b>Resekcyjny:</b> chemioterapia okołooperacyjna (FLOT) + gastrektomia z limfadenektomią D2",
-   "<b>Zaawansowany — I linia:</b> chemioterapia (fluoropirymidyna + platyna) ± trastuzumab (HER2+) ± niwolumab"],
- "Rak trzustki":[
-   "<b>Resekcyjny:</b> operacja Whipple'a → adiuwantowa chemioterapia (mFOLFIRINOX / gemcytabina)",
-   "<b>Zaawansowany — I linia:</b> FOLFIRINOX lub gemcytabina + nab-paklitaksel (zależnie od stanu sprawności)"],
- "Rak wątrobowokomórkowy (HCC)":[
-   "<b>Wczesny:</b> resekcja / przeszczep wątroby / ablacja (RFA)",
-   "<b>Pośredni:</b> chemoembolizacja (TACE)",
-   "<b>Zaawansowany — I linia:</b> atezolizumab + bewacyzumab (lub sorafenib / lenwatynib)",
-   "<b>II linia:</b> sorafenib, regorafenib, kabozantynib, ramucyrumab"],
- "Rak dróg żółciowych / pęcherzyka":[
-   "<b>Resekcyjny:</b> chirurgia radykalna → adiuwantowa kapecytabina",
-   "<b>Zaawansowany — I linia:</b> gemcytabina + cisplatyna (± durwalumab)"],
- "Rak jelita grubego":[
-   "<b>Okrężnica (I–III):</b> resekcja → adiuwantowy FOLFOX w st. III",
-   "<b>Odbytnica:</b> radiochemioterapia przedoperacyjna → wycięcie (TME) → uzupełnienie",
-   "<b>Rozsiany — I linia:</b> FOLFOX/FOLFIRI ± anty-EGFR (RAS/BRAF wt, guz lewostronny) lub bewacyzumab; MSI-H → immunoterapia",
-   "<b>Przerzuty do wątroby:</b> metastazektomia, gdy resekcyjne"],
- "Rak kanału odbytu":[
-   "<b>Podstawa:</b> chemioradioterapia (5-FU + mitomycyna) — oszczędza zwieracze",
-   "<b>Nawrót:</b> chirurgia ratunkowa (amputacja brzuszno-kroczowa)"],
- "Rak gruczołu krokowego":[
-   "<b>Niskie ryzyko:</b> aktywny nadzór",
-   "<b>Pośrednie / wysokie:</b> prostatektomia radykalna lub radioterapia + hormonoterapia (ADT)",
-   "<b>Rozsiany hormonowrażliwy:</b> ADT + docetaksel lub abirateron/enzalutamid",
-   "<b>Oporny na kastrację (CRPC):</b> nowe leki hormonalne, docetaksel, ¹⁷⁷Lu-PSMA, PARP (BRCA)"],
- "Rak nerki":[
-   "<b>Zlokalizowany:</b> nefrektomia (radykalna lub oszczędzająca)",
-   "<b>Rozsiany — I linia:</b> immunoterapia skojarzona (niwolumab + ipilimumab) lub TKI + immunoterapia",
-   "<b>Kolejne linie:</b> inhibitory kinaz (kabozantynib i in.)"],
- "Rak pęcherza moczowego":[
-   "<b>Nieinwazyjny (NMIBC):</b> TURBT → dopęcherzowo BCG",
-   "<b>Naciekający (MIBC):</b> chemioterapia neoadiuwantowa (cisplatyna) → cystektomia",
-   "<b>Zaawansowany — I linia:</b> chemioterapia platynowa → immunoterapia podtrzymująca"],
- "Nowotwory jądra":[
-   "<b>Podstawa:</b> orchidektomia → wg stadium: nadzór / chemioterapia (BEP) / radioterapia (nasieniak)",
-   "<b>Zaawansowany — I linia:</b> BEP",
-   "<b>Nawrót:</b> chemioterapia ratunkowa (VIP), w kolejnych liniach wysokodawkowa"],
- "Rak prącia":[
-   "<b>Podstawa:</b> chirurgia + węzły pachwinowe",
-   "<b>Zaawansowany:</b> chemioterapia oparta na cisplatynie ± radioterapia"],
- "Czerniak":[
-   "<b>Zlokalizowany:</b> szerokie wycięcie + biopsja węzła wartowniczego → adiuwant (immunoterapia lub anty-BRAF przy mutacji)",
-   "<b>Rozsiany — I linia:</b> immunoterapia (anty-PD-1 ± anty-CTLA-4) lub inhibitory BRAF + MEK (mutacja BRAF V600)"],
- "Rak skóry (podstawno-/kolczystokomórkowy)":[
-   "<b>Podstawa:</b> wycięcie miejscowe (radioterapia przy niekorzystnej lokalizacji)",
-   "<b>Zaawansowany:</b> anty-PD-1 (rak kolczystokomórkowy); inhibitory szlaku Hedgehog (rak podstawnokomórkowy)"],
- "Mięsaki tkanek miękkich":[
-   "<b>Podstawa:</b> szerokie wycięcie + radioterapia okołooperacyjna (zachowanie kończyny)",
-   "<b>Zaawansowany — I linia:</b> chemioterapia (doksorubicyna); kolejne linie wg podtypu"],
- "Nowotwory głowy i szyi":[
-   "<b>Wczesny:</b> chirurgia lub radioterapia radykalna",
-   "<b>Miejscowo zaawansowany:</b> chemioradioterapia (cisplatyna) lub operacja + adiuwant",
-   "<b>Nawrotowy / przerzutowy — I linia:</b> immunoterapia (pembrolizumab) ± chemioterapia"],
- "Rak tarczycy (zróżnicowany)":[
-   "<b>Podstawa:</b> tyreoidektomia → leczenie radiojodem (¹³¹I) → supresja TSH lewotyroksyną",
-   "<b>Oporny na jod:</b> inhibitory kinaz (lenwatynib, sorafenib)"],
- "Rak kory nadnerczy (ACC)":[
-   "<b>Podstawa:</b> radykalne wycięcie → mitotan uzupełniająco (wysokie ryzyko)",
-   "<b>Zaawansowany:</b> mitotan ± chemioterapia (EDP-M)"],
- "Chłoniak Hodgkina":[
-   "<b>I linia:</b> chemioterapia ABVD (± radioterapia na zmiany masywne)",
-   "<b>Nawrót / oporny:</b> chemioterapia ratunkowa + autoprzeszczep (auto-HSCT); brentuksymab, anty-PD-1"],
- "Chłoniaki nieziarnicze (NHL)":[
-   "<b>I linia:</b> immunochemioterapia R-CHOP (rytuksymab + CHOP)",
-   "<b>Nawrót / oporny:</b> chemioterapia ratunkowa + auto-HSCT; terapia CAR-T"],
- "Szpiczak plazmocytowy":[
-   "<b>I linia:</b> schemat 3–4-lekowy (np. bortezomib + lenalidomid + deksametazon) → auto-HSCT u kwalifikujących się → leczenie podtrzymujące",
-   "<b>Nawrót:</b> kolejne kombinacje (m.in. daratumumab)"]
-};
-
 const atlas=document.getElementById('atlas');
 let idCounter=0;
 DATA.forEach((grp,gi)=>{
@@ -1075,14 +929,9 @@ DATA.forEach((grp,gi)=>{
     let mh='';
     ORDER.forEach(k=>{
       const [role,desc]=c.m[k];
-      if(role==='no') return;
       mh+=`<div class="method"><div class="method-icon ${k}">${ICON[k]}</div><div class="method-body"><div class="method-top"><span class="method-name ${k}">${LABELS[k]}</span><span class="role ${role}">${ROLE_TXT[role]}</span></div><div class="method-desc">${desc}</div></div></div>`;
     });
-    const seq=SEQ[c.name]||[];
-    const seqHtml=seq.length?`<div class="seq"><div class="seq-label">Kolejność leczenia — rzuty</div><ol class="seq-list">${seq.map(s=>`<li>${s}</li>`).join('')}</ol></div>`:'';
-    const noList=ORDER.filter(k=>c.m[k][0]==='no').map(k=>LABELS[k]);
-    const notusedHtml=`<div class="notused">${noList.length?'<b>Nie stosuje się:</b> '+noList.join(', ')+'.':'<span class="none">Wszystkie 5 metod znajduje zastosowanie.</span>'}</div>`;
-    card.innerHTML=`<div class="card-name">${c.name}</div><div class="card-sub">${c.sub}</div>${seqHtml}<div class="methods-label">Rola metod leczenia</div><div class="methods">${mh}</div>${notusedHtml}`;
+    card.innerHTML=`<div class="card-name">${c.name}</div><div class="card-sub">${c.sub}</div><div class="methods">${mh}</div>`;
     sec.appendChild(card);
   });
   atlas.appendChild(sec);
